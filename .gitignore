@@ -83,6 +83,11 @@ web_modules/
 .cache
 .parcel-cache
 
+# Remix cli cache
+/.cache
+/build
+/public/build
+
 # Next.js build output
 .next
 out

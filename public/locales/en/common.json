@@ -1,0 +1,10 @@
+{
+  "login": "Login",
+  "register": "Register",
+  "logout": "Logout",
+  "about": "About",
+  "terms-of-service": "Terms of Service",
+  "privacy-policy": "Privacy Policy",
+  "long-link-placeholder": "Paste a long link here...",
+  "shorten": "Shorten"
+}

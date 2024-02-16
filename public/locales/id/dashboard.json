@@ -1,0 +1,11 @@
+{
+  "dashboard": "Dasbor",
+  "links": "Tautan",
+  "analytics": "Analitik",
+  "settings": "Pengaturan",
+  "additional-config": "Pengaturan Tambahan",
+  "placeholder-input-url-description": "Deskripsi tautan pendek (opsional)",
+  "placeholder-input-url-expired-at": "Waktu kedaluwarsa untuk tautan pendek (opsional)",
+  "placeholder-input-url-secret-code": "Kode rahasia untuk tautan pendek (opsional)",
+  "tooltip-input-url-secret-code": "Biarkan kosong jika anda tidak ingin menggunakan kode rahasia"
+}

@@ -1,0 +1,21 @@
+.ant-btn-primary:disabled {
+  background: #d9d9d9 !important;
+}
+
+.ant-btn-primary {
+  background: #1677ff !important;
+}
+
+input::placeholder {
+  color: #d1d5db !important;
+}
+
+.ant-picker-datetime-panel {
+  flex-direction: row !important;
+}
+
+@media screen and (max-width: 640px) {
+  .ant-picker-datetime-panel {
+    flex-direction: column !important;
+  }
+}
