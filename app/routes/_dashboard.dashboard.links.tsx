@@ -268,7 +268,7 @@ export default function DashboardLinks() {
           onChange={(value) => changeTab(+value)}
         />
       </div> */}
-      <Dashboard.CreateForm isReset={isSuccess} />
+      {/* <Dashboard.CreateForm isReset={isSuccess} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <div className="hidden lg:flex flex-col space-y-4">
           {masonryLists.left.map((data: any, i: number) => (
@@ -285,7 +285,7 @@ export default function DashboardLinks() {
             <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
           ))}
         </div>
-      </div>
+      </div> */}
     </>
   )
 }
