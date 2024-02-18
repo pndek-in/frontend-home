@@ -250,7 +250,7 @@ export default function DashboardLinks() {
         <Icon icon="line-md:external-link" className=" text-2xl sm:text-4xl" />
         <h1 className=" text-2xl sm:text-4xl font-semibold">{t("links")}</h1>
       </div>
-      {/* <div className="mb-4">
+      <div className="mb-4">
         <Segmented
           block
           size="large"
@@ -267,7 +267,7 @@ export default function DashboardLinks() {
           value={activeSegment}
           onChange={(value) => changeTab(+value)}
         />
-      </div> */}
+      </div>
       {/* <Dashboard.CreateForm isReset={isSuccess} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <div className="hidden lg:flex flex-col space-y-4">
