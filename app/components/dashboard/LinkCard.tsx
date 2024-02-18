@@ -108,7 +108,7 @@ export default function LinkCard({ data, isSuccess }: LinkCardProps) {
         <div className=" flex space-x-4">
           {data.status === 1 && (
             <>
-              <Tooltip title={t("tooltip-need-verify-first")}>
+              <Tooltip title="Test Tooltip without translation">
                 <button
                   onClick={showModal}
                   disabled={!context.user?.isVerified}
