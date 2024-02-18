@@ -99,12 +99,14 @@ export default function LinkCard({ data, isSuccess }: LinkCardProps) {
       )}
 
       <div className=" flex justify-between w-full mt-4 pt-4 border-t">
-        <EditLinkModal
-          data={data}
-          isSuccess={isSuccess}
-          setIsModalVisible={setIsModalVisible}
-          isModalVisible={isModalVisible}
-        />
+        {/* {isModalVisible && (
+          <EditLinkModal
+            data={data}
+            isSuccess={isSuccess}
+            setIsModalVisible={setIsModalVisible}
+            isModalVisible={isModalVisible}
+          />
+        )} */}
         <div className=" flex space-x-4">
           {data.status === 1 && (
             <>
