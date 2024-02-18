@@ -34,7 +34,7 @@ export default function GoogleLogin({
       <div
         id="g_id_onload"
         data-client_id={googleClientId}
-        data-login_uri="http://localhost:8081/auth/google"
+        data-login_uri="/auth/google"
         data-auto_prompt={isPrompt ? "true" : "false"}
       />
       {isButton && (
