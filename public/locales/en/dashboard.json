@@ -7,5 +7,6 @@
   "placeholder-input-url-description": "Short url description (optional)",
   "placeholder-input-url-expired-at": "Expired time for short url (optional)",
   "placeholder-input-url-secret-code": "Secret code for short URL (optional)",
-  "tooltip-input-url-secret-code": "Leave it blank if you don't want to use secret code"
+  "tooltip-input-url-secret-code": "Leave it blank if you don't want to use secret code",
+  "tooltip-need-verify-first": "You need to verify your email first"
 }
