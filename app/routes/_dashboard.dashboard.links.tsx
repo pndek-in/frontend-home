@@ -287,7 +287,7 @@ export default function DashboardLinks() {
           ))}
         </div>
       </div>
-      <Outlet />
+      {/* <Outlet /> */}
     </>
   )
 }
