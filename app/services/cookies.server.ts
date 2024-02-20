@@ -7,6 +7,7 @@ const defaultOptions = {
   secure: process.env.NODE_ENV === "production"
 } as const
 
+export const unclaimedLink = createCookie("link", defaultOptions)
 export const userState = createCookie("user", defaultOptions)
 export const globalToast = createCookie("toast", {
   ...defaultOptions,

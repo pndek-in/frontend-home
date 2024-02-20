@@ -18,4 +18,8 @@ input::placeholder {
   .ant-picker-datetime-panel {
     flex-direction: column !important;
   }
+
+  .ant-picker-panels { 
+    flex-direction: column !important;
+  } 
 }

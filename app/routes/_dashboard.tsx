@@ -51,7 +51,7 @@ export default function Index() {
                 className=" text-yellow-400 text-lg font-semibold"
               />
               <div className=" ml-3">
-                <p className=" text-sm text-yellow-700">{t("notVerified")}</p>
+                <p className=" text-sm text-yellow-700">{t("banner-not-verified")}</p>
               </div>
             </div>
           </div>

@@ -25,13 +25,15 @@ type DashboardTotalVisitorProps = {
   labels: string[]
   data: number[]
   title: string
+  isVerified: boolean
 }
 
 export default function DashboardTotalVisitor({
   label,
   labels,
   data,
-  title
+  title,
+  isVerified
 }: DashboardTotalVisitorProps) {
   const chartData = {
     labels,
@@ -55,9 +57,11 @@ export default function DashboardTotalVisitor({
   }
 
   return (
-    <div className=" bg-white p-4 rounded-md">
+    <div className="bg-white p-4 rounded-md">
       <h2 className=" text-center font-semibold text-lg mb-4">{title}</h2>
-      <Line options={options} data={chartData} />
+      <div className={isVerified ? "" : "blur-sm select-none"}>
+        <Line options={options} data={chartData} />
+      </div>
     </div>
   )
 }
