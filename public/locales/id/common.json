@@ -3,8 +3,11 @@
   "register": "Daftar",
   "logout": "Keluar",
   "about": "Tentang",
+  "dashboard": "Dasbor",
   "terms-of-service": "Ketentuan Layanan",
   "privacy-policy": "Kebijakan Privasi",
   "long-link-placeholder": "Masukkan tautan panjang anda disini...",
-  "shorten": "Pendekkan"
+  "shorten": "Pendekkan",
+  "claim": "Klaim tautan ini",
+  "analytics-claim-first": "Klaim tautan ini untuk melihat statistik"
 }

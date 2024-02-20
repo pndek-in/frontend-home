@@ -26,9 +26,12 @@ export default function AuthForm({
 
   useEffect(() => {
     if (actionData?.errors?.toast) {
-      toast.error(actionData?.errors?.toast);
+      toast.error(actionData?.errors?.toast, {
+        position: "top-center",
+        autoClose: 3000
+      })
     }
-  }, [actionData]);
+  }, [actionData])
 
   return (
     <div className=" text-center">

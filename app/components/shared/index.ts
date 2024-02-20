@@ -13,6 +13,7 @@ import Select from "./Select"
 import ShareButton from "./ShareButton"
 import TopFive from "./TopFive"
 import TotalVisitor from "./TotalVisitor"
+import UnclaimedLink from "./UnclaimedLink"
 
 export {
   AuthForm,
@@ -29,5 +30,6 @@ export {
   Select,
   ShareButton,
   TopFive,
-  TotalVisitor
+  TotalVisitor,
+  UnclaimedLink
 }

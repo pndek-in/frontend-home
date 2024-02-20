@@ -124,7 +124,8 @@ export default function App() {
     if (toastData) {
       toast[toastData.type || "success"](toastData.content, {
         toastId: "success-toast",
-        position: "top-center"
+        position: "top-center",
+        autoClose: 1000
       })
     }
   }, [toastData])

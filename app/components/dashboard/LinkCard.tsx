@@ -41,7 +41,11 @@ export default function LinkCard({ data, isSuccess }: LinkCardProps) {
 
   const copyText = () => {
     navigator.clipboard.writeText(`pndek.in/${data.path}`)
-    toast.success("Copied to clipboard")
+    toast.success("Copied to clipboard", {
+      toastId: "copy-to-clipboard",
+      position: "top-center",
+      autoClose: 1000
+    })
   }
 
   const [isModalVisible, setIsModalVisible] = useState(false)

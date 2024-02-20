@@ -3,8 +3,11 @@
   "register": "Register",
   "logout": "Logout",
   "about": "About",
+  "dashboard": "Dashboard",
   "terms-of-service": "Terms of Service",
   "privacy-policy": "Privacy Policy",
   "long-link-placeholder": "Paste a long link here...",
-  "shorten": "Shorten"
+  "shorten": "Shorten",
+  "claim": "Claim this link",
+  "analytics-claim-first": "Claim this link to view analytics"
 }

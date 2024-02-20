@@ -4,19 +4,20 @@ import type {
   ActionFunctionArgs,
   LoaderFunctionArgs
 } from "@remix-run/node"
-import {
-  useActionData,
-  useLoaderData,
-  useNavigate
-} from "@remix-run/react"
+import { useActionData, useLoaderData, useNavigate } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@iconify-icon/react"
 import { Segmented } from "antd"
 import { useState } from "react"
 
 import { Dashboard } from "~/components"
+import { UnclaimedLink } from "~/components/shared"
 import { apiHelper, dateHelper, isUrlValid } from "~/utils/helpers"
-import { userState, globalToast } from "~/services/cookies.server"
+import {
+  userState,
+  globalToast,
+  unclaimedLink
+} from "~/services/cookies.server"
 import API from "~/utils/api"
 
 export const meta: MetaFunction = () => {
@@ -27,6 +28,8 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
+  const linkData =
+    (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
   const { searchParams } = new URL(request.url)
   const status = searchParams.get("status")
   let links = [] as any
@@ -64,12 +67,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({
     lists,
     masonryLists,
-    status: status === "active" ? 1 : 0
+    status: status === "active" ? 1 : 0,
+    linkData
   })
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
+
+  if (!user.token) {
+    redirect("/login")
+  }
+
+  const linkData =
+    (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
   const headers = new Headers()
   const formData = await request.formData()
   const intent = formData.get("intent")
@@ -224,6 +235,40 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         })
       )
     }
+  } else if (intent === "claim") {
+    const payload = {
+      id: linkData.id,
+      token: user.token
+    }
+
+    const response = await API.link.claimLinkRequest(payload, apiHelper)
+
+    if (response.status === 200) {
+      isSuccessful = true
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: response.message,
+          type: "success"
+        })
+      )
+    } else {
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: response.message,
+          type: "error"
+        })
+      )
+    }
+
+    if (response.status !== 401) {
+      headers.append(
+        "Set-Cookie",
+        await unclaimedLink.serialize({ id: "" }, { path: "/" })
+      )
+    }
+
   }
 
   return json({ success: isSuccessful }, { headers })
@@ -233,7 +278,8 @@ export default function DashboardLinks() {
   const { t } = useTranslation("dashboard")
   const navigate = useNavigate()
   const actionData = useActionData<typeof action>()
-  const { lists, status, masonryLists } = useLoaderData<typeof loader>()
+  const { lists, status, masonryLists, linkData } =
+    useLoaderData<typeof loader>()
   const isSuccess = actionData?.success
 
   const [activeSegment, setActiveSegment] = useState(status)
@@ -271,6 +317,7 @@ export default function DashboardLinks() {
       <Dashboard.CreateForm isReset={isSuccess} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <div className="hidden lg:flex flex-col space-y-4">
+          {linkData?.id && <UnclaimedLink linkData={linkData} />}
           {masonryLists.left.map((data: any, i: number) => (
             <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
           ))}
@@ -281,6 +328,7 @@ export default function DashboardLinks() {
           ))}
         </div>
         <div className="lg:hidden flex flex-col space-y-4">
+          {linkData?.id && <UnclaimedLink linkData={linkData} />}
           {lists.map((data: any, i: number) => (
             <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
           ))}

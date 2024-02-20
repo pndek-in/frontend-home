@@ -1,5 +1,9 @@
 import { json, redirect } from "@remix-run/node"
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node"
+import type {
+  ActionFunctionArgs,
+  MetaFunction,
+  LoaderFunctionArgs
+} from "@remix-run/node"
 import {
   useLoaderData,
   useActionData,
@@ -7,15 +11,11 @@ import {
 } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 
-import { apiHelper } from "~/utils/helpers"
+import { apiHelper, isUrlValid } from "~/utils/helpers"
 import API from "~/utils/api"
-import { REGEX } from "~/utils/constants"
+import { unclaimedLink, globalToast } from "~/services/cookies.server"
 import { GoogleLogin } from "~/components/shared"
 import { Home } from "~/components"
-
-type ActionError = {
-  link?: string
-}
 
 export const handle = {
   i18n: ["home", "meta"]
@@ -31,25 +31,89 @@ export const meta: MetaFunction = () => {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  const headers = new Headers()
   const formData = await request.formData()
-  const payload = Object.fromEntries(formData)
   const link = String(formData.get("link"))
+  const intent = String(formData.get("intent"))
 
-  const errors: ActionError = {}
+  let isSuccess = false
 
-  // link is must valid url
-  if (!REGEX.VALID_URL_REGEX.test(link)) {
-    errors.link = "Link is not valid URL"
+  if (intent === "create") {
+    const payload = {
+      url: link
+    }
+
+    if (!link) {
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: "Link is required!",
+          type: "error"
+        })
+      )
+
+      return redirect("/", {
+        headers
+      })
+    }
+
+    if (isUrlValid(link) === false) {
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: "Link is not valid!",
+          type: "error"
+        })
+      )
+
+      return redirect("/", {
+        headers
+      })
+    }
+
+    const response = await API.link.createLinkWithoutAuthRequest(
+      payload,
+      apiHelper
+    )
+
+    if (response.status === 201) {
+      isSuccess = true
+
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: response.message,
+          type: "success"
+        })
+      )
+
+      headers.append(
+        "Set-Cookie",
+        await unclaimedLink.serialize({
+          id: response.data.linkId,
+          path: response.data.path,
+          url: response.data.url
+        })
+      )
+
+      return redirect("/", {
+        headers
+      })
+    } else {
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: response.message,
+          type: "error"
+        })
+      )
+    }
   }
 
-  if (Object.keys(errors).length > 0) {
-    return json({ errors })
-  }
-
-  return redirect("/")
+  return json({ isSuccess }, { headers })
 }
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
   const googleClientId = process.env.GOOGLE_CLIENT_ID
   const response = await API.stats.getHomeStats(apiHelper)
   const stats = response.data || {
@@ -58,12 +122,20 @@ export async function loader() {
     totalUsers: 0
   }
 
-  return json({ googleClientId, stats })
+  const linkData =
+    (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
+
+  return json({ googleClientId, stats, linkData })
 }
 
 export default function Index() {
-  const { googleClientId = "", stats } = useLoaderData<typeof loader>()
+  const {
+    googleClientId = "",
+    stats,
+    linkData
+  } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
+
   const context = useOutletContext() as any
 
   return (
@@ -71,7 +143,7 @@ export default function Index() {
       {!context?.isLoggedIn && (
         <GoogleLogin isPrompt googleClientId={googleClientId} />
       )}
-      <Home.Hero actionData={actionData} />
+      <Home.Hero isSuccess={actionData?.isSuccess} linkData={linkData} />
       <Home.Features />
       <Home.TelegramExample />
       <Home.Statistic stats={stats} />

@@ -96,9 +96,41 @@ const editLinkRequest = async (
   })
 }
 
+const createLinkWithoutAuthRequest = async (
+  payload: {
+    url: string
+  },
+  api: ApiFunction
+): Promise<LinkResponse> => {
+
+  return makeApiRequest<LinkData>("/link/noauth/create", api, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  })
+}
+
+const claimLinkRequest = async (
+  payload: {
+    id: number
+    token: string
+  },
+  api: ApiFunction
+): Promise<LinkResponse> => {
+
+  return makeApiRequest<LinkData>(`/link/noauth/claim`, api, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${payload.token}`
+    },
+    body: JSON.stringify({ id: payload.id })
+  })
+}
+
 export default {
   createLinkRequest,
   getLinkListRequest,
   archiveUnarchiveLinkRequest,
-  editLinkRequest
+  editLinkRequest,
+  createLinkWithoutAuthRequest,
+  claimLinkRequest
 }

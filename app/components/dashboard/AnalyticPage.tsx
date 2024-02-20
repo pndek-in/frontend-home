@@ -39,7 +39,7 @@ export default function AnalyticPage({
   return (
     <div className=" bg-white rounded-md p-4">
       <Form
-        method="POST"
+        method="post"
         action={action}
         className=" flex gap-4 flex-col sm:flex-row"
       >
