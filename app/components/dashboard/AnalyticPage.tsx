@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react"
+import { Form, useOutletContext } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 import {
   TotalVisitor,
@@ -29,6 +29,8 @@ export default function AnalyticPage({
   statsData
 }: AnalyticPageProps) {
   const { t } = useTranslation("dashboard")
+  const context = useOutletContext() as any
+
   const masonryLists = {
     left: statsData.tables.filter((_: any, i: number) => i % 2 === 0),
     right: statsData.tables.filter((_: any, i: number) => i % 2 !== 0)
@@ -52,31 +54,25 @@ export default function AnalyticPage({
             key={detail.title + detail.value}
             className=" bg-white p-4 rounded-md flex flex-row lg:flex-col gap-1 border shadow-md"
           >
-            <h2 className="text-sm">{detail.title}:</h2>
-            <p className="text-sm font-semibold">
-              <Counter total={detail.value} />
+            <h2 className="text-sm">{t(detail.title)}:</h2>
+            <p
+              className={`${
+                context.user.isVerified ? "" : " blur-sm select-none"
+              } text-sm font-semibold`}
+            >
+              <Counter total={context.user.isVerified ? detail.value : 0} />
             </p>
           </div>
         ))}
       </div>
       <TotalVisitor
-        label="Total Visitor"
+        label={t("total-visitor")}
         labels={statsData.chart.labels}
         data={statsData.chart.data}
-        title="Total Visitor"
+        title={t("total-visitor")}
+        isVerified={context.user.isVerified}
       />
-      <div className=" grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        {/* {statsData.tables.map((table) => {
-          return (
-            <TopFive
-              key={table.title}
-              labels={table.labels}
-              data={table.values}
-              title={table.title}
-              columnTitle={table.column}
-            />
-          )
-        })} */}
+      <div className=" grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <div className="hidden lg:flex flex-col space-y-4">
           {masonryLists.left.map((data: any) => (
             <TopFive

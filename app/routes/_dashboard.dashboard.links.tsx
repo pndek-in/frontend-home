@@ -256,11 +256,11 @@ export default function DashboardLinks() {
           size="large"
           options={[
             {
-              label: "Tautan Aktif",
+              label: t("active-link"),
               value: 1
             },
             {
-              label: "Tautan Tidak Aktif",
+              label: t("inactive-link"),
               value: 0
             }
           ]}
