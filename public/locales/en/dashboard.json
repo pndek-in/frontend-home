@@ -32,5 +32,7 @@
   "clicks-by-browser": "Visitor browser",
   "browser": "Browser",
   "clicks-by-device": "Visitor device",
-  "device": "Device"
+  "device": "Device",
+  "clicks-by-os": "Visitor Operating System",
+  "os": "Operating System"
 }
