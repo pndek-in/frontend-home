@@ -1,4 +1,7 @@
 {
+  "links": "Links", 
+  "analytics": "Analytics",
+  "settings": "Settings",
   "additional-config": "Additional Settings",
   "active-link": "Active Link",
   "inactive-link": "Inactive Link",

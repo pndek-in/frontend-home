@@ -1,4 +1,7 @@
 {
+  "menu": "Menu",
+  "links": "Tautan",
+  "analytics": "Analitik",
   "additional-config": "Pengaturan Tambahan",
   "active-link": "Tautan Aktif",
   "inactive-link": "Tautan Tidak Aktif",
