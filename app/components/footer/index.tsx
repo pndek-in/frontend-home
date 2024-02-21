@@ -1,25 +1,12 @@
 import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
+
 import { Link } from "~/components/shared"
+import { footerMenu } from "~/utils/constants"
 
 export default function Footer() {
   const currentYear = dayjs().year()
   const { t } = useTranslation()
-
-  const links = [
-    {
-      name: "about",
-      url: "/about"
-    },
-    {
-      name: "privacy-policy",
-      url: "/privacy-policy"
-    },
-    {
-      name: "terms-of-service",
-      url: "/terms-of-service"
-    }
-  ]
 
   return (
     <footer className="bg-white dark:bg-slate-200 h-full">
@@ -31,7 +18,7 @@ export default function Footer() {
           </Link>
         </p>
         <div className=" flex md:space-x-4 flex-col md:flex-row space-y-4 md:space-y-0 items-center md:mb-0 mb-4">
-          {links.map((link) => (
+          {footerMenu.map((link) => (
             <Link to={link.url} key={link.name}>
               {t(link.name)} {link.name === "about" && " pndek.in"}
             </Link>

@@ -1,10 +1,9 @@
 import { useTranslation } from "react-i18next"
 
 import { clientCookie } from "~/utils/helpers"
-import { userState } from "~/services/cookies.server"
 import { Select } from "~/components/shared"
 
-export default function LanguageSelect({ className = "" }) {
+export default function LanguageSelect({ className = "", isBlock = false }) {
   const { i18n } = useTranslation()
   const currentLang = i18n.language
 
@@ -41,6 +40,7 @@ export default function LanguageSelect({ className = "" }) {
         defaultValue={getLangLabel(currentLang)}
         onChange={(e) => changeLanguage(e)}
         options={options}
+        isBlock={isBlock}
       />
     </div>
   )

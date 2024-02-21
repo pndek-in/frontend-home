@@ -24,7 +24,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export default function Index() {
-  const { t } = useTranslation("dashboard")
+  const { t } = useTranslation()
   const { user } = useLoaderData<typeof loader>()
   const context = { user }
 
@@ -36,7 +36,7 @@ export default function Index() {
             <li key={i} className="flex items-center space-x-2">
               <Icon icon={menu.icon} />
               <Link to={menu.url} className=" font-semibold">
-                <span>{t(menu.name)}</span>
+                <span>{t(menu.name, { ns: "common" })}</span>
               </Link>
             </li>
           ))}
@@ -51,7 +51,9 @@ export default function Index() {
                 className=" text-yellow-400 text-lg font-semibold"
               />
               <div className=" ml-3">
-                <p className=" text-sm text-yellow-700">{t("banner-not-verified")}</p>
+                <p className=" text-sm text-yellow-700">
+                  {t("banner-not-verified", { ns: "dashboard" })}
+                </p>
               </div>
             </div>
           </div>

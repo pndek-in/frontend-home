@@ -9,12 +9,14 @@ type DropdownProps = {
     label: string
     value: string
   }[]
+  isBlock?: boolean
 }
 
 function Dropdown({
   defaultValue = "",
   options = [],
-  onChange
+  onChange,
+  isBlock
 }: DropdownProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -44,24 +46,23 @@ function Dropdown({
   }, [dropdownRef])
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div
+      className={`relative inline-block text-left ${isBlock ? "w-full" : ""}`}
+      ref={dropdownRef}
+    >
       <button
-        className="inline-flex justify-between items-center pl-4 pr-2 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500 min-w-32"
+        className="inline-flex justify-between items-center pl-4 pr-2 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500 min-w-32 w-full"
         onClick={toggleDropdown}
       >
         {defaultValue}
         <Icon
-          icon={
-            isDropdownOpen
-              ? "line-md:chevron-up"
-              : "line-md:chevron-down"
-          }
+          icon={isDropdownOpen ? "line-md:chevron-up" : "line-md:chevron-down"}
           className="ml-2"
         />
       </button>
 
       {isDropdownOpen && (
-        <div className="origin-top-left absolute left-0 mt-2 min-w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div className="origin-top-left absolute left-0 mt-2 min-w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 w-full">
           <div className="py-2 p-2" role="menu" aria-orientation="vertical">
             {options.map((option) => (
               <div
