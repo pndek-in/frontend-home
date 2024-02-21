@@ -1,8 +1,7 @@
 {
-  "dashboard": "Dasbor",
+  "menu": "Menu",
   "links": "Tautan",
   "analytics": "Analitik",
-  "settings": "Pengaturan",
   "additional-config": "Pengaturan Tambahan",
   "active-link": "Tautan Aktif",
   "inactive-link": "Tautan Tidak Aktif",
@@ -32,5 +31,7 @@
   "clicks-by-browser": "Peramban pengunjung",
   "browser": "Peramban",
   "clicks-by-device": "Perangkat pengunjung",
-  "device": "Perangkat"
+  "device": "Perangkat",
+  "clicks-by-os": "Sistem operasi pengunjung",
+  "os": "Sistem operasi"
 }

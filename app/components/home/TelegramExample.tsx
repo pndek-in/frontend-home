@@ -5,7 +5,7 @@ import { gsap } from "gsap/dist/gsap.js"
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger.js"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "~/components/shared"
+import { Button, Link } from "~/components/shared"
 import PhoneFrame from "~/assets/phone-frame.svg"
 import BotLogo from "~/assets/bot-logo.png"
 
@@ -119,7 +119,9 @@ export default function TelegramExample() {
             {t("bot-preview-title")}
           </h2>
           <p className=" text-base mb-6">{t("bot-preview-desc")}</p>
-          <Button>{t("bot-preview-cta")}</Button>
+          <Link to="https://t.me/pndekin_bot" target="_blank">
+            <Button>{t("bot-preview-cta")}</Button>
+          </Link>
         </div>
       </div>
     </div>
