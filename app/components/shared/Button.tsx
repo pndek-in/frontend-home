@@ -39,7 +39,7 @@ const Button: React.FC<CustomButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={` text-white font-semibold text-sm  focus:outline-none flex items-center justify-center ${block} ${fit} ${group} ${variants[variant]} ${className}`}
+      className={` text-white font-semibold text-sm  focus:outline-none flex items-center justify-center ${block} ${fit} ${group} ${variants[variant]} ${className} disabled:opacity-50`}
       type={type}
       {...otherProps}
     >

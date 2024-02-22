@@ -11,8 +11,13 @@ type AuthData = UserData & {
   token: string
 }
 
+type TokenData = {
+  token: string
+}
+
 type MeResponse = ApiResponse<UserData>
 type AuthResponse = ApiResponse<AuthData>
+type TokenResponse = ApiResponse<TokenData>
 
 const loginRequest = async (
   payload: { email: string; password: string },
@@ -53,13 +58,21 @@ const googleAuthRequest = async (
   })
 }
 
-const getMeRequest = async (api: ApiFunction): Promise<MeResponse> => {
-  return makeApiRequest<UserData>("/auth/me", api)
+const generateTelegramToken = async (
+  payload: { token: string },
+  api: ApiFunction
+): Promise<TokenResponse> => {
+  return makeApiRequest<TokenData>("/auth/token/telegram", api, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${payload.token}`
+    }
+  })
 }
 
 export default {
   loginRequest,
   registerRequest,
-  getMeRequest,
-  googleAuthRequest
+  googleAuthRequest,
+  generateTelegramToken
 }

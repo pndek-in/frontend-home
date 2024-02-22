@@ -21,7 +21,7 @@ export default function TelegramExample() {
     },
     {
       id: 2,
-      text: "Input your long url",
+      text: "Input your URL",
       type: "bot",
       bottom: "bottom-[280px]"
     },
@@ -33,7 +33,7 @@ export default function TelegramExample() {
     },
     {
       id: 4,
-      text: `Here your shortened link:<br /><span class=" font-semibold">pndek.in/xxxxx</span>`,
+      text: `Your short link is:<br /><span class=" font-semibold">pndek.in/xxxxx</span>`,
       type: "bot",
       bottom: "bottom-[60px]"
     }

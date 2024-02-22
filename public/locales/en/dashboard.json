@@ -18,6 +18,7 @@
   "total-clicks-period": "Total clicks in this period",
   "unique-visitors": "Unique visitors",
   "qr-code-visits": "QR code visits",
+  "created-using-telegram": "Links created using Telegram",
   "total-visitor": "Total visitor",
   "total": "Total",
   "most-clicked-links": "Most clicked links",
@@ -33,5 +34,7 @@
   "clicks-by-device": "Visitor device",
   "device": "Device",
   "clicks-by-os": "Visitor Operating System",
-  "os": "Operating System"
+  "os": "Operating System",
+  "generate-token-telegram": "Generate Telegram Token for accessing Telegram Bot",
+  "generate": "Generate"
 }
