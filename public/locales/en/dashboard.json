@@ -34,5 +34,7 @@
   "clicks-by-device": "Visitor device",
   "device": "Device",
   "clicks-by-os": "Visitor Operating System",
-  "os": "Operating System"
+  "os": "Operating System",
+  "generate-token-telegram": "Generate Telegram Token for accessing Telegram Bot",
+  "generate": "Generate"
 }

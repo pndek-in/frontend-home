@@ -6,5 +6,8 @@ export default {
   theme: {
     extend: {}
   },
+  variants: {
+    backgroundColor: ({ after }: any) => after(["disabled"])
+  },
   plugins: []
 } satisfies Config
