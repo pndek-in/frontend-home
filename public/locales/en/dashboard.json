@@ -35,6 +35,9 @@
   "device": "Device",
   "clicks-by-os": "Visitor Operating System",
   "os": "Operating System",
+  "request-verification-email": "Request verification email",
+  "send-email": "Send email",
+  "email-sent": "Email sent",
   "generate-token-telegram": "Generate Telegram Token for accessing Telegram Bot",
   "generate": "Generate"
 }

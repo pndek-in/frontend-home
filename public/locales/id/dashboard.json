@@ -35,6 +35,9 @@
   "device": "Perangkat",
   "clicks-by-os": "Sistem operasi pengunjung",
   "os": "Sistem operasi",
+  "request-verification-email": "Kirim email verifikasi",
+  "send-email": "Kirim email",
+  "email-sent": "Email terkirim",
   "generate-token-telegram": "Buat Token Telegram untuk mengakses Bot Telegram",
   "generate": "Buat"
 }

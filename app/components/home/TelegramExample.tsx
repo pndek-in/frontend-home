@@ -114,12 +114,12 @@ export default function TelegramExample() {
             </div>
           </div>
         </div>
-        <div className=" flex flex-col justify-center md:items-start items-center mt-8 md:mt-0">
+        <div className=" flex flex-col justify-center items-start mt-8 md:mt-0">
           <h2 className=" text-xl md:text-2xl font-semibold mb-2">
             {t("bot-preview-title")}
           </h2>
           <p className=" text-base mb-6">{t("bot-preview-desc")}</p>
-          <Link to="https://t.me/pndekin_bot" target="_blank">
+          <Link to="https://t.me/pndekin_bot" target="_blank" className=" self-center md:self-start">
             <Button>{t("bot-preview-cta")}</Button>
           </Link>
         </div>

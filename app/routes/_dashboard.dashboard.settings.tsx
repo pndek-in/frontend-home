@@ -2,11 +2,11 @@ import { json } from "@remix-run/node"
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@iconify-icon/react"
-import { useActionData, useOutletContext } from "@remix-run/react"
+import { useActionData } from "@remix-run/react"
 
 import { apiHelper } from "~/utils/helpers"
 import API from "~/utils/api"
-import { userState } from "~/services/cookies.server"
+import { userState, globalToast } from "~/services/cookies.server"
 import { Dashboard } from "~/components"
 
 export const meta: MetaFunction = () => {
@@ -17,21 +17,50 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
+  const headers = new Headers()
+
+  const formData = await request.formData()
+  const intent = formData.get("intent")
 
   const payload = {
     token: user.token
   }
+  let telegramToken = ""
+  let isEmailSent = false
 
-  const response = await API.auth.generateTelegramToken(payload, apiHelper)
-  const telegramToken = response.data.token
+  if (intent === "generate-telegram-token") {
+    const response = await API.auth.generateTelegramToken(payload, apiHelper)
+    telegramToken = response.data.token
+  } else if (intent === "request-verification-email") {
+    const response = await API.auth.requestVerificationEmail(payload, apiHelper)
 
-  return json({ telegramToken })
+    if (response.status === 200) {
+      isEmailSent = true
+
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: "Email sent!",
+          type: "success"
+        })
+      )
+    } else {
+      headers.append(
+        "Set-Cookie",
+        await globalToast.serialize({
+          content: "Failed to send email!",
+          type: "error"
+        })
+      )
+    }
+  }
+
+  return json({ telegramToken, isEmailSent }, { headers })
 }
 
 export default function DashboardSettings() {
   const { t } = useTranslation("dashboard")
   const actionData = useActionData<typeof action>()
-  const context = useOutletContext() as any
 
   return (
     <>
@@ -41,6 +70,7 @@ export default function DashboardSettings() {
       </div>
 
       <div className=" bg-white rounded-md p-4">
+        <Dashboard.Setting.UserSetting isEmailSent={actionData?.isEmailSent} />
         <Dashboard.Setting.TelegramSetting token={actionData?.telegramToken} />
       </div>
     </>

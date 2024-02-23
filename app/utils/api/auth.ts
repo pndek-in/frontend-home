@@ -15,7 +15,6 @@ type TokenData = {
   token: string
 }
 
-type MeResponse = ApiResponse<UserData>
 type AuthResponse = ApiResponse<AuthData>
 type TokenResponse = ApiResponse<TokenData>
 
@@ -70,9 +69,33 @@ const generateTelegramToken = async (
   })
 }
 
+const requestVerificationEmail = async (
+  payload: { token: string },
+  api: ApiFunction
+): Promise<ApiResponse<{}>> => {
+  return makeApiRequest<{}>("/auth/verify/request", api, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${payload.token}`
+    }
+  })
+}
+
+const verifyEmail = async (
+  payload: { token: string },
+  api: ApiFunction
+): Promise<ApiResponse<{}>> => {
+  const url = `/auth/verify/email?token=${payload.token}`
+  return makeApiRequest<{}>(url, api, {
+    method: "POST"
+  })
+}
+
 export default {
   loginRequest,
   registerRequest,
   googleAuthRequest,
-  generateTelegramToken
+  generateTelegramToken,
+  requestVerificationEmail,
+  verifyEmail
 }
