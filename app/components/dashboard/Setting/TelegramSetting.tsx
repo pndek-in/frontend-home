@@ -62,6 +62,8 @@ export default function TelegramSetting({ token }: TelegramSettingProps) {
                 id=" generate-token-btn-desktop"
                 type="submit"
                 className=" hidden sm:flex"
+                name="intent"
+                value="generate-telegram-token"
                 disabled={!context.user?.isVerified}
               >
                 {t("generate")}
@@ -70,6 +72,8 @@ export default function TelegramSetting({ token }: TelegramSettingProps) {
                 id=" generate-token-btn-mobile"
                 type="submit"
                 className=" flex sm:hidden"
+                name="intent"
+                value="generate-telegram-token"
                 isBlock
                 disabled={!context.user?.isVerified}
               >

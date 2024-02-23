@@ -27,9 +27,9 @@ export default function Index() {
 
   return (
     <main className=" min-h-[calc(100vh-64px-60px)] flex items-center p-4">
-      <div className=" w-full sm:w-[640px] rounded-md bg-gray-50 dark:bg-slate-200 mx-auto p-4 sm:p-16 min-h-96">
+      <div className=" w-full sm:w-[640px] rounded-md bg-gray-50 dark:bg-slate-200 mx-auto p-4 sm:p-16">
         <Outlet />
-        <Divider text={t("or-continue-with")} className="mb-4" />
+        <Divider text={t("or-continue-with")} className="my-4" />
         <div className=" flex justify-center">
           <GoogleLogin isButton googleClientId={googleClientId} />
         </div>
