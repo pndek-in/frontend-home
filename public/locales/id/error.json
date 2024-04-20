@@ -1,0 +1,10 @@
+{
+  "link-invalid": "Tautan tidak valid",
+  "err-link-invalid": "Kesalahan ini disebabkan oleh tautan yang tidak valid. Entah tautannya sudah kedaluwarsa atau tidak lagi ada.",
+  "link-not-found": "Tautan tidak ditemukan",
+  "err-link-not-found": "Kesalahan ini disebabkan oleh tautan yang tidak ada.",
+  "link-server-error": "Kesalahan server",
+  "err-link-server-error": "Kesalahan ini disebabkan oleh kesalahan server.",
+  "try-again": "Silakan coba lagi dengan tautan yang valid atau hubungi orang yang mengirimkan tautan tersebut.",
+  "try-again-later": " Silakan coba lagi nanti."
+}
