@@ -74,25 +74,47 @@ export const links: LinksFunction = () => [
 
 export function ErrorBoundary() {
   const error = useRouteError()
+  return (
+    <html>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body className=" bg-slate-200 dark:bg-slate-600">
+        <Navbar
+          theme={"light" as Theme.Light}
+          onThemeChanged={() => {}}
+          isLoggedIn={false}
+          pathname="/"
+          isError
+        />
 
-  if (isRouteErrorResponse(error)) {
-    return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-      </div>
-    )
-  } else if (error instanceof Error) {
-    return (
-      <div>
-        <h1>Error</h1>
-        <p>{error.message}</p>
-      </div>
-    )
-  } else {
-    return <h1>Unknown Error</h1>
-  }
+        <div className=" min-h-[calc(100vh-64px-60px)] flex items-center justify-center">
+          <div className=" text-center">
+            {isRouteErrorResponse(error) ? (
+              <>
+                <h1 className=" font-extrabold text-7xl md:text-9xl">{error.status}</h1>
+                <h3 className=" font-semibold text-xl md:text-4xl">{error.statusText}</h3>
+              </>
+            ) : error instanceof Error ? (
+              <>
+                <h1 className=" font-extrabold text-7xl md:text-9xl">500</h1>
+                <h3 className=" font-semibold text-xl md:text-4xl">{error.message}</h3>
+              </>
+            ) : (
+              <>
+                <h1 className=" font-extrabold text-7xl md:text-9xl">500</h1>
+                <h3 className=" font-semibold text-xl md:text-4xl">Internal Server Error</h3>
+              </>
+            )}
+          </div>
+        </div>
+        <Footer />
+      </body>
+    </html>
+  )
 }
 
 export default function App() {
