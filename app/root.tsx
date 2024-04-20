@@ -157,6 +157,21 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* <!-- Open Graph / Facebook --> */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://pndek.in" />
+        <meta property="og:title" content="pndek.in | Shorten your url" />
+        <meta property="og:description" content="Shorten your url easily with pndek.in" />
+        <meta property="og:image" content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png" />
+
+        {/* <!-- Twitter --> */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://pndek.in" />
+        <meta property="twitter:title" content="pndek.in | Shorten your url" />
+        <meta property="twitter:description" content="Shorten your url easily with pndek.in" />
+        <meta property="twitter:image" content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png" />
+
         <Meta />
         <Links />
       </head>
