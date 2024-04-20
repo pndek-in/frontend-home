@@ -1,0 +1,5 @@
+{
+  "about-pndek-in": "pndek.in adalah layanan pemendek tautan gratis yang memungkinkan Anda untuk membuat tautan yang lebih pendek dan mudah diingat. Layanan ini dibuat oleh <a href='https://pndek.in/jalu' target='_blank' class='font-semibold text-sm text-blue-700 hover:underline dark:text-blue-400'>Jalu Wibowo Aji</a> sebagai proyek pribadi dalam rangka belajar kerangka JavaScript, Remix. Selain Remix sebagai kerangka utama, layanan ini juga menggunakan beberapa teknologi lain seperti Redis, Bot Telegram, dan lainnya.",
+  "stacks": "Beberapa teknologi yang digunakan dalam layanan ini:",
+  "inquiry": "Jika anda mempunyai saran atau masukan silakan kunjungi repositori GitHub layanan ini di <a href='https://pndek.in/gh' target='_blank' class='font-semibold text-sm text-blue-700 hover:underline dark:text-blue-400'>sini</a>."
+}

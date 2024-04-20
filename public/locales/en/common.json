@@ -13,5 +13,6 @@
   "long-link-placeholder": "Paste a long link here...",
   "shorten": "Shorten",
   "claim": "Claim this link",
-  "analytics-claim-first": "Claim this link to view analytics"
+  "analytics-claim-first": "Claim this link to view analytics",
+  "last-updated": "Last updated"
 }
