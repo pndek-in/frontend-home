@@ -1,0 +1,10 @@
+{
+  "link-invalid": "Invalid Link",
+  "err-link-invalid": "This error is caused by an invalid link. Either the link is expired or it no longer exists.",
+  "link-not-found": "Link Not Found",
+  "err-link-not-found": "This error is caused by a link that does not exist.",
+  "link-server-error": "Server Error",
+  "err-link-server-error": "This error is caused by a server error.",
+  "try-again": "Please try again with a valid link or contact the person who sent you the link.",
+  "try-again-later": "Please try again later."
+}
