@@ -13,7 +13,7 @@ export default function Footer() {
       <div className=" xl:max-w-7xl w-full mx-auto flex md:flex-row flex-col-reverse items-center justify-between p-5">
         <p className=" font-medium text-sm">
           © {currentYear}{" "}
-          <Link to="https://jaluwibowo.id" target="_blank">
+          <Link to="https://pndek.in/jalu" target="_blank">
             Jalu Wibowo Aji
           </Link>
         </p>
