@@ -66,6 +66,7 @@ export default function CreateForm({ isReset }: CreateFormProps) {
               onChange={handleAddConfig}
               className=" cursor-pointer"
               disabled={!context?.user?.isVerified}
+              checked={isAddConfigShown}
             />
             <label htmlFor="addConfig" className="pl-2 cursor-pointer">
               {t("additional-config")}

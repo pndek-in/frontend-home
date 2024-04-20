@@ -1,3 +1,4 @@
+import Article from "./Article"
 import AuthForm from "./AuthForm"
 import Button from "./Button"
 import CalendarRangePicker from "./CalendarRangePicker"
@@ -16,6 +17,7 @@ import TotalVisitor from "./TotalVisitor"
 import UnclaimedLink from "./UnclaimedLink"
 
 export {
+  Article,
   AuthForm,
   Button,
   Counter,

@@ -1,0 +1,5 @@
+{
+  "about-pndek-in": "pndek.in is a free link shortening service that allows you to create shorter and easier-to-remember links. This service was created by <a href='https://pndek.in/jalu' target='_blank' class='font-semibold text-sm text-blue-700 hover:underline dark:text-blue-400'>Jalu Wibowo Aji</a> as a personal project to learn the JavaScript framework, Remix. In addition to Remix as the main framework, this service also uses several other technologies such as Redis, Telegram Bot, and others.",
+  "stacks": "Some of the technologies used in this service include:",
+  "inquiry": "If you have any suggestions or feedback, please visit the GitHub repository of this service <a href='https://pndek.in/gh' target='_blank' class='font-semibold text-sm text-blue-700 hover:underline dark:text-blue-400'>here</a>."
+}

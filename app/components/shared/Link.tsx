@@ -8,7 +8,7 @@ interface LinkProps {
   [key: string]: any // Additional props
 }
 
-const defaultClasses = "font-semibold text-sm text-blue-700 hover:underline dark:text-blue-500"
+const defaultClasses = "font-semibold text-sm text-blue-700 hover:underline dark:text-blue-400"
 
 const Link: React.FC<LinkProps> = ({
   children,

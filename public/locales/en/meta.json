@@ -9,5 +9,11 @@
   "meta-verify-desc": "Verify your email address to use pndek.in",
   "meta-dashboard-link-title": "Links | pndek.in",
   "meta-dashboard-analytics-title": "Analytics | pndek.in",
-  "meta-dashboard-settings-title": "Settings | pndek.in"
+  "meta-dashboard-settings-title": "Settings | pndek.in",
+  "meta-privacy-title": "Privacy Policy | pndek.in",
+  "meta-privacy-desc": "Privacy policy of pndek.in",
+  "meta-terms-title": "Terms and Conditions | pndek.in",
+  "meta-terms-desc": "Terms and conditions of pndek.in",
+  "meta-about-title": "About | pndek.in",
+  "meta-about-desc": "About pndek.in"
 }

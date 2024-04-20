@@ -82,7 +82,7 @@ export default function Drawer({ isLoggedIn, homeLink }: DrawerProps) {
           </ul>
           <p className=" mt-4 font-medium text-sm text-center">
             © {currentYear}{" "}
-            <Link to="https://jaluwibowo.id" target="_blank">
+            <Link to="https://pndek.in/jalu" target="_blank">
               Jalu Wibowo Aji
             </Link>
           </p>
