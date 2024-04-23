@@ -5,7 +5,6 @@
   "additional-config": "Additional Settings",
   "active-link": "Active Link",
   "inactive-link": "Inactive Link",
-  "banner-not-verified": "You need to verify your email to use all of the features, check your email for verification link",
   "placeholder-input-url-description": "Short url description (optional)",
   "placeholder-input-url-expired-at": "Expired time for short url (optional)",
   "placeholder-input-url-secret-code": "Secret code for short URL (optional)",

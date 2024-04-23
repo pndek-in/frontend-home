@@ -51,7 +51,7 @@ export default function Index() {
               />
               <div className=" ml-3">
                 <p className=" text-sm text-yellow-700">
-                  {t("banner-not-verified", { ns: "dashboard" })}
+                  {t("banner-not-verified", { ns: "common" })}
                 </p>
               </div>
             </div>

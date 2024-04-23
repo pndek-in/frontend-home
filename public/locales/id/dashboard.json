@@ -5,7 +5,6 @@
   "additional-config": "Pengaturan Tambahan",
   "active-link": "Tautan Aktif",
   "inactive-link": "Tautan Tidak Aktif",
-  "banner-not-verified": "Anda harus memverifikasi akun anda terlebih dahulu untuk menggunakan semua fitur, cek email anda untuk verifikasi",
   "placeholder-input-url-description": "Deskripsi tautan pendek (opsional)",
   "placeholder-input-url-expired-at": "Waktu kedaluwarsa untuk tautan pendek (opsional)",
   "placeholder-input-url-secret-code": "Kode rahasia untuk tautan pendek (opsional)",
