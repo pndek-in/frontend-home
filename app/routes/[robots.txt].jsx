@@ -9,8 +9,9 @@ export const loader = () => {
 
     Disallow: /
 
+    Allow: /$
     ${allows.join("")}
-    Sitemap: https://pndek.in/sitemap.xml
+    Sitemap: https://app.pndek.in/sitemap.xml
   `
 
   return new Response(robotText, {
