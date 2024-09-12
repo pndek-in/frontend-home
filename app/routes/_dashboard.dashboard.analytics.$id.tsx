@@ -63,8 +63,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   const formData = await request.formData()
   const rangeData = formData.getAll("range[]") // Use getAll to get all values
-  const start = `${rangeData[0]} 00:00:00`
-  const end = `${rangeData[1]} 23:59:59`
+  const startDate = dateHelper.getEnglishDate(rangeData[0] as string)
+  const endDate = dateHelper.getEnglishDate(rangeData[1] as string)
+
+  const start = `${startDate} 00:00:00`
+  const end = `${endDate} 23:59:59`
 
   const query = getStatsQuery({
     start: dayjs(start).toDate(),
