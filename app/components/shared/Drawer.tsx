@@ -7,6 +7,7 @@ import dayjs from "dayjs"
 import { Button, Link } from "~/components/shared"
 import LanguageSelect from "~/components/navbar/LanguageSelect"
 import { dashboardMenu, footerMenu } from "~/utils/constants"
+import { useAds } from "~/utils/hooks/useAds"
 import ImageLogo from "~/assets/logo.svg"
 
 type DrawerProps = {
@@ -19,6 +20,8 @@ export default function Drawer({ isLoggedIn, homeLink }: DrawerProps) {
   const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
   const currentYear = dayjs().year()
+
+  const { isAdShowing } = useAds({ id: "ad-container-mobile" })
 
   // Close the drawer when the location changes
   useEffect(() => {
@@ -86,6 +89,17 @@ export default function Drawer({ isLoggedIn, homeLink }: DrawerProps) {
               Jalu Wibowo Aji
             </Link>
           </p>
+
+          {isAdShowing ? (
+            <div
+              id="ad-container-mobile"
+              className=" mt-4 w-full flex justify-center"
+            ></div>
+          ) : (
+            <p className=" text-sm text-gray-500">
+              {t("advertising", { ns: "common" })}
+            </p>
+          )}
 
           {isLoggedIn && (
             <Form
