@@ -16,5 +16,11 @@
   "banner-not-verified": "You need to verify your email to use all of the features, check your email for verification link",
   "analytics-claim-first": "Claim this link to view analytics",
   "last-updated": "Last updated",
-  "advertising": "Please disable your adblocker to support us"
+  "advertising": "Please disable your adblocker to support us",
+  "secret-code-required": "Secret code is required to unlock this link",
+  "secret-code-placeholder": "Enter secret code",
+  "unlock-link": "Unlock",
+  "redirecting": "Redirecting to",
+  "redirect-countdown": "Redirecting in {{seconds}} second(s)...",
+  "redirect-failed": "If you are not redirected automatically, please click the link above."
 }

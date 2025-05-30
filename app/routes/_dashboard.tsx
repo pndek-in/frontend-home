@@ -7,7 +7,6 @@ import { Icon } from "@iconify-icon/react"
 import { userState } from "~/services/cookies.server"
 import { Link } from "~/components/shared"
 import { dashboardMenu } from "~/utils/constants"
-import { useAds } from "~/utils/hooks/useAds"
 
 export const handle = {
   i18n: ["dashboard", "meta"]
@@ -27,7 +26,6 @@ export default function Index() {
   const { t } = useTranslation()
   const { user } = useLoaderData<typeof loader>()
   const context = { user }
-  const { isAdShowing } = useAds({ id: "ad-container" })
 
   return (
     <main className=" min-h-[calc(100vh-64px-60px)] w-full lg:max-w-7xl mx-auto p-4 flex space-x-0 sm:space-x-4">
@@ -41,16 +39,6 @@ export default function Index() {
               </Link>
             </li>
           ))}
-          {isAdShowing ? (
-            <div
-              id="ad-container"
-              className=" mt-4 w-full flex justify-center"
-            ></div>
-          ) : (
-            <p className=" text-sm text-gray-500">
-              {t("advertising", { ns: "common" })}
-            </p>
-          )}
         </ul>
       </div>
       <div className=" w-full h-min">

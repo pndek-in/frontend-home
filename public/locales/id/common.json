@@ -16,5 +16,11 @@
   "banner-not-verified": "Anda harus memverifikasi akun anda terlebih dahulu untuk menggunakan semua fitur, cek email anda untuk verifikasi",
   "analytics-claim-first": "Klaim tautan ini untuk melihat statistik",
   "last-updated": "Terakhir diperbarui",
-  "advertising": "Mohon nonaktifkan adblocker anda untuk mendukung kami"
+  "advertising": "Mohon nonaktifkan adblocker anda untuk mendukung kami",
+  "secret-code-required": "Kode rahasia diperlukan untuk membuka tautan ini",
+  "secret-code-placeholder": "Masukkan kode rahasia",
+  "unlock-link": "Buka",
+  "redirecting": "Mengalihkan ke",
+  "redirect-countdown": "Mengalihkan dalam {{seconds}} detik...",
+  "redirect-failed": "Jika anda tidak dialihkan secara otomatis, silakan klik tautan di atas."
 }

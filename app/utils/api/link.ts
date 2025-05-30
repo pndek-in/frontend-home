@@ -126,11 +126,38 @@ const claimLinkRequest = async (
   })
 }
 
+const redirectLinkRequest = async (
+  payload: {
+    unique: string,
+    visitor: string,
+    source: string,
+    referrer: string | null,
+    secretCode?: string
+  },
+  api: ApiFunction,
+): Promise<LinkResponse> => {
+  const { unique, secretCode, referrer, visitor, source } = payload
+  const query = secretCode ? "?unlock=true" : ""
+
+  const body = {
+    referrer,
+    visitor,
+    source,
+    secretCode
+  }
+
+  return makeApiRequest<LinkData>(`/link/short/${unique}${query}`, api, {
+    method: "POST",
+    body: JSON.stringify(body)
+  })
+}
+
 export default {
   createLinkRequest,
   getLinkListRequest,
   archiveUnarchiveLinkRequest,
   editLinkRequest,
   createLinkWithoutAuthRequest,
-  claimLinkRequest
+  claimLinkRequest,
+  redirectLinkRequest
 }
