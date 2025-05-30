@@ -95,8 +95,8 @@ export function ErrorBoundary() {
           <div className=" text-center">
             {isRouteErrorResponse(error) ? (
               <>
-                <h1 className=" font-extrabold text-7xl md:text-9xl">{error.status}</h1>
-                <h3 className=" font-semibold text-xl md:text-4xl">{error.statusText}</h3>
+                <h1 className=" font-extrabold text-7xl md:text-9xl mb-10">Oops...</h1>
+                <h3 className=" font-semibold text-xl md:text-4xl">Err{error.status} - {error.statusText}</h3>
               </>
             ) : error instanceof Error ? (
               <>

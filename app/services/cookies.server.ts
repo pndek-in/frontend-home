@@ -13,3 +13,4 @@ export const globalToast = createCookie("toast", {
   ...defaultOptions,
   maxAge: 1
 })
+export const visitorCookie = createCookie("visitor", defaultOptions)
