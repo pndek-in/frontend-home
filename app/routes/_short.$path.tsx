@@ -1,6 +1,6 @@
 import { redirect, data } from "@remix-run/node"
 import { useParams } from "@remix-run/react"
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import type {
   ActionFunctionArgs,
@@ -18,13 +18,29 @@ import API from "~/utils/api"
 import { apiHelper } from "~/utils/helpers"
 import { Button, Input } from "~/components/shared"
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const { t } = useTranslation("meta")
+  if (!data) {
+    return [
+      { title: t("meta-home-title") },
+      { name: "description", content: t("meta-home-desc") }
+    ]
+  }
 
-  return [
-    { title: t("meta-home-title") },
-    { name: "description", content: t("meta-home-desc") }
-  ]
+  const { response } = data?.data || {
+    response: { url: "", hasSecretCode: false }
+  }
+  if (response.hasSecretCode) {
+    return [
+      { title: t("meta-home-title") },
+      { name: "description", content: t("meta-home-desc") }
+    ]
+  } else {
+    return [
+      { title: `Redirecting to ${response.url}` },
+      { name: "description", content: "Redirecting to " + response.url }
+    ]
+  }
 }
 
 async function getVisitor(request: Request): Promise<string> {
@@ -117,7 +133,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (response.status === 200) {
     return data(
       {
-        message: "Redirect functionality is not implemented yet.",
         response: {
           url: response.data.url,
           hasSecretCode: response.data.hasSecretCode,
@@ -137,38 +152,37 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 }
 
-
 export default function Redirect() {
   const { t } = useTranslation("common")
   const params = useParams()
   const unique = params.path
   const { data } = useLoaderData<typeof loader>()
 
-  const [countdown, setCountdown] = useState(5);
-  const [redirectFailed, setRedirectFailed] = useState(false);
+  const [countdown, setCountdown] = useState(10)
+  const [redirectFailed, setRedirectFailed] = useState(false)
 
   useEffect(() => {
     // Only run on client-side
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return
 
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+      return () => clearTimeout(timer)
     } else {
       // Attempt to redirect
-      window.location.href = data.response.url;
-      
+      window.location.href = data.response.url
+
       // Fallback if redirect doesn't happen immediately
-      const fallbackTimer = setTimeout(() => setRedirectFailed(true), 2000);
-      return () => clearTimeout(fallbackTimer);
+      const fallbackTimer = setTimeout(() => setRedirectFailed(true), 2000)
+      return () => clearTimeout(fallbackTimer)
     }
-  }, [countdown, data.response.url]);
+  }, [countdown, data.response.url])
 
   if (!data) {
     return <div>Loading...</div>
   }
 
-  const { message, response } = data
+  const { response } = data
   if (response.hasSecretCode) {
     return (
       <div className="min-h-[calc(100vh-64px-60px)] flex justify-center items-center">
@@ -200,49 +214,27 @@ export default function Redirect() {
     )
   }
 
-  // return (
-  //   <div className="min-h-[calc(100vh-64px-60px)] flex justify-center items-center">
-  //     <div className="max-w-96 mx-auto p-4 text-center">
-  //       <p className="mb-4 text-lg">
-  //         Redirecting to:{" "}
-  //         <a href={data.response.url} className="font-semibold text-blue-600 hover:underline cursor-pointer">
-  //           {data.response.url}
-  //         </a>
-  //       </p>
-
-  //       {/*
-
-  //       Show countdown from 5 seconds and redirect automatically
-
-  //       if it cannot redirect, render this
-
-  //       <p className="text-gray-500">
-  //         If you are not redirected automatically, please click the link above.
-  //       </p>
-
-  //        */}
-
-  //     </div>
-  //   </div>
-  // )
-
   return (
     <div className="min-h-[calc(100vh-64px-60px)] flex justify-center items-center">
       <div className="max-w-96 mx-auto p-4 text-center">
         <p className="mb-4 text-lg">
           Redirecting to:{" "}
-          <a href={data.response.url} className="font-semibold text-blue-600 hover:underline cursor-pointer">
+          <a
+            href={data.response.url}
+            className="font-semibold text-blue-600 hover:underline cursor-pointer"
+          >
             {data.response.url}
           </a>
         </p>
 
         <p className="text-lg font-bold mb-3">
-          Redirecting in {countdown} second{countdown !== 1 ? 's' : ''}...
+          Redirecting in {countdown} second{countdown !== 1 ? "s" : ""}...
         </p>
 
         {redirectFailed && (
           <p className="text-gray-500">
-            If you are not redirected automatically, please click the link above.
+            If you are not redirected automatically, please click the link
+            above.
           </p>
         )}
       </div>
