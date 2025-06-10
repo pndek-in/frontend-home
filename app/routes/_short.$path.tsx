@@ -97,6 +97,7 @@ async function generatePayload(
   request: Request,
   secretCode?: string
 ): Promise<Payload> {
+  const userAgent = request.headers.get("user-agent") || "node-fetch"
   const referrer = request.headers.get("referer")
   const currentUrl = new URL(request.url)
   const sourceQuery = currentUrl.searchParams.get("s") || "web"
@@ -109,7 +110,8 @@ async function generatePayload(
     referrer,
     visitor,
     source: sourceQuery,
-    secretCode
+    secretCode,
+    userAgent
   }
 
   return payload

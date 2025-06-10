@@ -102,7 +102,6 @@ const createLinkWithoutAuthRequest = async (
   },
   api: ApiFunction
 ): Promise<LinkResponse> => {
-
   return makeApiRequest<LinkData>("/link/noauth/create", api, {
     method: "POST",
     body: JSON.stringify(payload)
@@ -116,7 +115,6 @@ const claimLinkRequest = async (
   },
   api: ApiFunction
 ): Promise<LinkResponse> => {
-
   return makeApiRequest<LinkData>(`/link/noauth/claim`, api, {
     method: "POST",
     headers: {
@@ -128,15 +126,16 @@ const claimLinkRequest = async (
 
 const redirectLinkRequest = async (
   payload: {
-    unique: string,
-    visitor: string,
-    source: string,
-    referrer: string | null,
+    unique: string
+    visitor: string
+    source: string
+    referrer: string | null
+    userAgent?: string
     secretCode?: string
   },
-  api: ApiFunction,
+  api: ApiFunction
 ): Promise<LinkResponse> => {
-  const { unique, secretCode, referrer, visitor, source } = payload
+  const { unique, secretCode, referrer, visitor, source, userAgent } = payload
   const query = secretCode ? "?unlock=true" : ""
 
   const body = {
@@ -146,8 +145,14 @@ const redirectLinkRequest = async (
     secretCode
   }
 
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    ...(userAgent ? { "User-Agent": userAgent } : {})
+  }
+
   return makeApiRequest<LinkData>(`/link/short/${unique}${query}`, api, {
     method: "POST",
+    headers,
     body: JSON.stringify(body)
   })
 }
