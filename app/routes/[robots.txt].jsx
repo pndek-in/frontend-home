@@ -1,16 +1,8 @@
 export const loader = () => {
-  const allowedPaths = ["/about", "/privacy-policy", "/terms-of-service"]
-
-  const allows = allowedPaths.map((path) => `Allow: ${path}
-    `)
-
   const robotText = `
     User-agent: *
-
-    Disallow: /
-
-    Allow: /$
-    ${allows.join("")}
+    Disallow: /dashboard
+    Allow: /
     Sitemap: https://pndek.in/sitemap.xml
   `
 
