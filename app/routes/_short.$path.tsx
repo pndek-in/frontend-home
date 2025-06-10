@@ -34,7 +34,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   } else {
     if (response.metaData) {
       return [
-        { title: `Redirecting to ${response.metaData.title}` },
+        { title: response.metaData.title },
         { name: "description", content: response.metaData.description },
         { name: "og:title", content: response.metaData.title },
         { name: "og:description", content: response.metaData.description },
@@ -48,7 +48,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     }
 
     return [
-      { title: `Redirecting to ${response.url}` },
+      { title: response.url },
       { name: "description", content: "Redirecting to " + response.url },
       { name: "og:title", content: `Redirecting to ${response.url}` },
       { name: "og:description", content: "Redirecting to " + response.url },

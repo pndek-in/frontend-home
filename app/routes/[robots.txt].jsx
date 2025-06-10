@@ -1,8 +1,8 @@
 export const loader = () => {
   const robotText = `
     User-agent: *
-    Disallow: /dashboard
     Allow: /
+    Disallow: /dashboard
     Sitemap: https://pndek.in/sitemap.xml
   `
 
