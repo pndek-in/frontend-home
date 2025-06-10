@@ -9,7 +9,8 @@ import {
   ScrollRestoration,
   useLoaderData,
   isRouteErrorResponse,
-  useRouteError
+  useRouteError,
+  useMatches
 } from "@remix-run/react"
 import { useMemo, useState, useEffect } from "react"
 import { useChangeLanguage } from "remix-i18next"
@@ -95,18 +96,26 @@ export function ErrorBoundary() {
           <div className=" text-center">
             {isRouteErrorResponse(error) ? (
               <>
-                <h1 className=" font-extrabold text-7xl md:text-9xl mb-10">Oops...</h1>
-                <h3 className=" font-semibold text-xl md:text-4xl">Err{error.status} - {error.statusText}</h3>
+                <h1 className=" font-extrabold text-7xl md:text-9xl mb-10">
+                  Oops...
+                </h1>
+                <h3 className=" font-semibold text-xl md:text-4xl">
+                  Err{error.status} - {error.statusText}
+                </h3>
               </>
             ) : error instanceof Error ? (
               <>
                 <h1 className=" font-extrabold text-7xl md:text-9xl">500</h1>
-                <h3 className=" font-semibold text-xl md:text-4xl">{error.message}</h3>
+                <h3 className=" font-semibold text-xl md:text-4xl">
+                  {error.message}
+                </h3>
               </>
             ) : (
               <>
                 <h1 className=" font-extrabold text-7xl md:text-9xl">500</h1>
-                <h3 className=" font-semibold text-xl md:text-4xl">Internal Server Error</h3>
+                <h3 className=" font-semibold text-xl md:text-4xl">
+                  Internal Server Error
+                </h3>
               </>
             )}
           </div>
@@ -152,6 +161,11 @@ export default function App() {
     }
   }, [toastData])
 
+  const matches = useMatches()
+  const isShortRoute = matches.some((match: any) =>
+    match.id.startsWith("routes/_short.$path")
+  )
+
   return (
     <html lang={locale} dir={i18n.dir()} {...htmlProps}>
       <head>
@@ -159,18 +173,38 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* <!-- Open Graph / Facebook --> */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pndek.in" />
-        <meta property="og:title" content="pndek.in | Shorten your url" />
-        <meta property="og:description" content="Shorten your url easily with pndek.in" />
-        <meta property="og:image" content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png" />
+        {!isShortRoute && (
+          <>
+            <meta property="og:url" content="https://pndek.in" />
+            <meta property="og:title" content="pndek.in | Shorten your url" />
+            <meta
+              property="og:description"
+              content="Shorten your url easily with pndek.in"
+            />
 
-        {/* <!-- Twitter --> */}
+            {/* <!-- Twitter --> */}
+            <meta property="twitter:url" content="https://pndek.in" />
+            <meta
+              property="twitter:title"
+              content="pndek.in | Shorten your url"
+            />
+            <meta
+              property="twitter:description"
+              content="Shorten your url easily with pndek.in"
+            />
+          </>
+        )}
+
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
+        />
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://pndek.in" />
-        <meta property="twitter:title" content="pndek.in | Shorten your url" />
-        <meta property="twitter:description" content="Shorten your url easily with pndek.in" />
-        <meta property="twitter:image" content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png" />
+        <meta
+          property="twitter:image"
+          content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
+        />
 
         <Meta />
         <Links />

@@ -9,8 +9,6 @@ import type {
 } from "@remix-run/node"
 import {
   useLoaderData,
-  useActionData,
-  useOutletContext,
   Form
 } from "@remix-run/react"
 import { visitorCookie } from "~/services/cookies.server"
@@ -38,7 +36,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   } else {
     return [
       { title: `Redirecting to ${response.url}` },
-      { name: "description", content: "Redirecting to " + response.url }
+      { name: "description", content: "Redirecting to " + response.url },
+      { name: 'og:title', content: `Redirecting to ${response.url}` },
+      { name: 'og:description', content: "Redirecting to " + response.url },
+      { name: 'og:url', content: response.url },
+      { name: 'twitter:title', content: `Redirecting to ${response.url}` },
+      { name: 'twitter:description', content: "Redirecting to " + response.url },
+      { name: 'twitter:url', content: response.url }
     ]
   }
 }
@@ -158,7 +162,7 @@ export default function Redirect() {
   const unique = params.path
   const { data } = useLoaderData<typeof loader>()
 
-  const [countdown, setCountdown] = useState(10)
+  const [countdown, setCountdown] = useState(999999)
   const [redirectFailed, setRedirectFailed] = useState(false)
 
   useEffect(() => {
