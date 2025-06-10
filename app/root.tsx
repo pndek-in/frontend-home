@@ -181,6 +181,11 @@ export default function App() {
               property="og:description"
               content="Shorten your url easily with pndek.in"
             />
+            <meta property="og:type" content="website" />
+            <meta
+              property="og:image"
+              content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
+            />
 
             {/* <!-- Twitter --> */}
             <meta property="twitter:url" content="https://pndek.in" />
@@ -192,19 +197,13 @@ export default function App() {
               property="twitter:description"
               content="Shorten your url easily with pndek.in"
             />
+            <meta property="twitter:card" content="summary_large_image" />
+            <meta
+              property="twitter:image"
+              content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
+            />
           </>
         )}
-
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:image"
-          content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
-        />
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta
-          property="twitter:image"
-          content="https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
-        />
 
         <Meta />
         <Links />

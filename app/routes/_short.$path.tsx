@@ -7,11 +7,9 @@ import type {
   MetaFunction,
   LoaderFunctionArgs
 } from "@remix-run/node"
-import {
-  useLoaderData,
-  Form
-} from "@remix-run/react"
+import { useLoaderData, Form } from "@remix-run/react"
 import { visitorCookie } from "~/services/cookies.server"
+import { fetchMetadata } from "~/services/preview.server"
 import API from "~/utils/api"
 import { apiHelper } from "~/utils/helpers"
 import { Button, Input } from "~/components/shared"
@@ -26,7 +24,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
 
   const { response } = data?.data || {
-    response: { url: "", hasSecretCode: false }
+    response: { url: "", hasSecretCode: false, metaData: null }
   }
   if (response.hasSecretCode) {
     return [
@@ -34,15 +32,41 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
       { name: "description", content: t("meta-home-desc") }
     ]
   } else {
+    if (response.metaData) {
+      return [
+        { title: `Redirecting to ${response.metaData.title}` },
+        { name: "description", content: response.metaData.description },
+        { name: "og:title", content: response.metaData.title },
+        { name: "og:description", content: response.metaData.description },
+        { name: "og:image", content: response.metaData.image || "" },
+        { name: "og:url", content: response.url },
+        { name: "twitter:title", content: response.metaData.title },
+        { name: "twitter:description", content: response.metaData.description },
+        { name: "twitter:image", content: response.metaData.image || "" },
+        { name: "twitter:url", content: response.url }
+      ]
+    }
+
     return [
       { title: `Redirecting to ${response.url}` },
       { name: "description", content: "Redirecting to " + response.url },
-      { name: 'og:title', content: `Redirecting to ${response.url}` },
-      { name: 'og:description', content: "Redirecting to " + response.url },
-      { name: 'og:url', content: response.url },
-      { name: 'twitter:title', content: `Redirecting to ${response.url}` },
-      { name: 'twitter:description', content: "Redirecting to " + response.url },
-      { name: 'twitter:url', content: response.url }
+      { name: "og:title", content: `Redirecting to ${response.url}` },
+      { name: "og:description", content: "Redirecting to " + response.url },
+      { name: "og:url", content: response.url },
+      {
+        name: "og:image",
+        content: "https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
+      },
+      { name: "twitter:title", content: `Redirecting to ${response.url}` },
+      {
+        name: "twitter:description",
+        content: "Redirecting to " + response.url
+      },
+      { name: "twitter:url", content: response.url },
+      {
+        name: "twitter:image",
+        content: "https://cdn.jaluwibowo.id/assets/pndekin/pndekin_meta.png"
+      }
     ]
   }
 }
@@ -135,12 +159,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
   )
 
   if (response.status === 200) {
+    let metaData = null
+    if (response.data.url) {
+      metaData = await fetchMetadata(response.data.url)
+    }
+
     return data(
       {
         response: {
           url: response.data.url,
           hasSecretCode: response.data.hasSecretCode,
-          payload
+          payload,
+          metaData
         }
       },
       {
