@@ -30,11 +30,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
   if (response.hasSecretCode) {
     return [
+      { name: 'robots', content: 'noindex, nofollow' },
       { title: t("meta-home-title") },
       { name: "description", content: t("meta-home-desc") }
     ]
   } else {
     return [
+      { name: 'robots', content: 'noindex, nofollow' },
       { title: `Redirecting to ${response.url}` },
       { name: "description", content: "Redirecting to " + response.url },
       { name: 'og:title', content: `Redirecting to ${response.url}` },
