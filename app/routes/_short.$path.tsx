@@ -162,7 +162,8 @@ export default function Redirect() {
   const unique = params.path
   const { data } = useLoaderData<typeof loader>()
 
-  const [countdown, setCountdown] = useState(999999)
+  const COUNTDOWN = 5
+  const [countdown, setCountdown] = useState(COUNTDOWN)
   const [redirectFailed, setRedirectFailed] = useState(false)
 
   useEffect(() => {
