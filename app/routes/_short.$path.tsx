@@ -41,14 +41,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
         { property: "og:description", content: response.metaData.description },
         { property: "og:image", content: response.metaData.image || "" },
         { property: "og:url", content: response.url },
-        { property: "twitter:card", content: "summary_large_image" },
-        { property: "twitter:title", content: response.metaData.title },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: response.metaData.title },
         {
-          property: "twitter:description",
+          name: "twitter:description",
           content: response.metaData.description
         },
-        { property: "twitter:image", content: response.metaData.image || "" },
-        { property: "twitter:url", content: response.url }
+        { name: "twitter:image", content: response.metaData.image || "" },
+        { name: "twitter:url", content: response.url }
       ]
     }
 
