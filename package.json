@@ -27,6 +27,7 @@
     "i18next-fs-backend": "^2.3.1",
     "i18next-http-backend": "^2.4.2",
     "isbot": "^3.6.8",
+    "jalutils": "^1.0.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
