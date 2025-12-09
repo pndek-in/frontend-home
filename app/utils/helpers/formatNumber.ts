@@ -1,14 +1,16 @@
+import { ceil } from 'jalutils'
+
 const formatNumber = (num: number, separator?: string) => {
   {
     let suffix = ""
 
     if (num > 999999) {
       suffix = "M"
-      num = Math.ceil(num / 1000000)
+      num = ceil(num / 1000000)
     } else {
       if (num > 999) {
         suffix = "K"
-        num = Math.ceil(num / 1000)
+        num = ceil(num / 1000)
       }
     }
 
