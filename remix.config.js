@@ -3,7 +3,8 @@ export default {
   ignoredRouteFiles: ["**/.*"],
   serverDependenciesToBundle: [
     "remix-i18next",
-    /^remix-utils.*/
+    /^remix-utils.*/,
+    "jalutils"
   ]
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
