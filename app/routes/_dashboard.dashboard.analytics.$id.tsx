@@ -14,10 +14,13 @@ import {
 import { useTranslation } from "react-i18next"
 import { Icon } from "@iconify-icon/react"
 import dayjs from "dayjs"
-import { apiHelper, dateHelper } from "~/utils/helpers"
-import API from "~/utils/api"
+
+import { dateHelper } from "~/utils/helpers"
 import { userState } from "~/services/cookies.server"
 import { Dashboard } from "~/components"
+import { authenticate } from "~/server/auth/authenticate.server"
+import { authorizeLink } from "~/server/auth/authorize-link.server"
+import { getLinkStats } from "~/server/services/stats.server"
 
 export const meta: MetaFunction = () => {
   const { t } = useTranslation("meta")
@@ -25,68 +28,52 @@ export const meta: MetaFunction = () => {
   return [{ title: t("meta-dashboard-analytics-title") }]
 }
 
-const getStatsQuery = ({ start, end }: { start: Date; end: Date }) => {
-  return `start=${dateHelper.dateToUnixTimestamp(
-    start
-  )}&end=${dateHelper.dateToUnixTimestamp(end)}`
-}
+const emptyStats = { counters: [], chart: { labels: [], data: [] }, tables: [], link: { path: "" } }
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const maxRange = 14
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
-  const id = params.id || 0
-
+  const id = Number(params.id)
   const start = dayjs().subtract(maxRange, "day").toDate()
   const end = dayjs().toDate()
-  const query = getStatsQuery({ start, end })
 
-  const response = await API.stats.getLinkStats(
-    { token: user.token, query, id: +id },
-    apiHelper
-  )
-
-  const stats = response.data || {
-    counters: [],
-    chart: {
-      labels: [],
-      data: []
-    },
-    tables: []
-  }
+  let stats = emptyStats
+  try {
+    const userData = await authenticate(user.token)
+    await authorizeLink(id, userData.userId)
+    const response = await getLinkStats(
+      id,
+      dateHelper.dateToUnixTimestamp(start),
+      dateHelper.dateToUnixTimestamp(end)
+    )
+    stats = response.data || emptyStats
+  } catch {}
 
   return json({ stats, maxRange })
 }
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
-  const id = params.id || 0
-
+  const id = Number(params.id)
   const formData = await request.formData()
-  const rangeData = formData.getAll("range[]") // Use getAll to get all values
+  const rangeData = formData.getAll("range[]")
   const startDate = dateHelper.getEnglishDate(rangeData[0] as string)
   const endDate = dateHelper.getEnglishDate(rangeData[1] as string)
 
-  const start = `${startDate} 00:00:00`
-  const end = `${endDate} 23:59:59`
-
-  const query = getStatsQuery({
-    start: dayjs(start).toDate(),
-    end: dayjs(end).toDate()
-  })
-
-  const response = await API.stats.getLinkStats(
-    { token: user.token, query, id: +id },
-    apiHelper
+  const startUnix = dateHelper.dateToUnixTimestamp(
+    dayjs(`${startDate} 00:00:00`).toDate()
+  )
+  const endUnix = dateHelper.dateToUnixTimestamp(
+    dayjs(`${endDate} 23:59:59`).toDate()
   )
 
-  const stats = response.data || {
-    counters: [],
-    chart: {
-      labels: [],
-      data: []
-    },
-    tables: []
-  }
+  let stats = emptyStats
+  try {
+    const userData = await authenticate(user.token)
+    await authorizeLink(id, userData.userId)
+    const response = await getLinkStats(id, startUnix, endUnix)
+    stats = response.data || emptyStats
+  } catch {}
 
   return json({ stats })
 }
@@ -95,9 +82,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   actionResult,
   defaultShouldRevalidate
 }) => {
-  if (actionResult?.stats) {
-    return false
-  }
+  if (actionResult?.stats) return false
   return defaultShouldRevalidate
 }
 
@@ -111,9 +96,7 @@ export default function DashboardAnalytics() {
   const [statsData, setStatsData] = useState(stats)
 
   useEffect(() => {
-    if (actionData) {
-      setStatsData(actionData.stats)
-    }
+    if (actionData) setStatsData(actionData.stats)
   }, [actionData])
 
   return (

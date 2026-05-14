@@ -4,7 +4,9 @@ export default {
   serverDependenciesToBundle: [
     "remix-i18next",
     /^remix-utils.*/,
-    "jalutils"
+    "jalutils",
+    "string-randomify",
+    "isbot"
   ]
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",

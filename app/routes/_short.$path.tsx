@@ -10,9 +10,8 @@ import type {
 import { useLoaderData, Form } from "@remix-run/react"
 import { visitorCookie } from "~/services/cookies.server"
 import { fetchMetadata } from "~/services/preview.server"
-import API from "~/utils/api"
-import { apiHelper } from "~/utils/helpers"
 import { Button, Input } from "~/components/shared"
+import { findUniqueLink } from "~/server/services/link.server"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const { t } = useTranslation("meta")
@@ -43,10 +42,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
         { property: "og:url", content: response.url },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: response.metaData.title },
-        {
-          name: "twitter:description",
-          content: response.metaData.description
-        },
+        { name: "twitter:description", content: response.metaData.description },
         { name: "twitter:image", content: response.metaData.image || "" },
         { name: "twitter:url", content: response.url }
       ]
@@ -64,91 +60,87 @@ async function getVisitor(request: Request): Promise<string> {
     (await visitorCookie.parse(request.headers.get("Cookie"))) || {}
 
   if (visitor) return visitor
-  else {
-    const now = Date.now()
-    const randomString = Math.random().toString(36).substring(2, 7)
-    const newVisitor = `${now}${randomString}`
 
-    return newVisitor
-  }
+  const now = Date.now()
+  const randomString = Math.random().toString(36).substring(2, 7)
+  return `${now}${randomString}`
 }
 
-type Payload = {
-  unique: string
-  referrer: string | null
-  visitor: string
-  source: string
-  secretCode?: string
-}
-
-async function generatePayload(
-  request: Request,
-  secretCode?: string
-): Promise<Payload> {
-  const userAgent = request.headers.get("user-agent") || "node-fetch"
-  const referrer = request.headers.get("referer")
-  const currentUrl = new URL(request.url)
-  const sourceQuery = currentUrl.searchParams.get("s") || "web"
-  const uniquePath = currentUrl.pathname.split("/").pop() || ""
-
-  const visitor = await getVisitor(request)
-
-  const payload = {
-    unique: uniquePath,
-    referrer,
-    visitor,
-    source: sourceQuery,
-    secretCode,
-    userAgent
-  }
-
-  return payload
+function getIpAddress(request: Request): string {
+  return (
+    request.headers.get("x-forwarded-for") ||
+    request.headers.get("x-real-ip") ||
+    "127.0.0.1"
+  )
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
-  const secretCode = formData.get("secretCode") as string | ""
-  const payload = await generatePayload(request, secretCode)
+  const secretCode = (formData.get("secretCode") as string) || ""
+  const currentUrl = new URL(request.url)
+  const path = currentUrl.pathname.split("/").pop() || ""
+  const source = currentUrl.searchParams.get("s") || "web"
+  const visitor = await getVisitor(request)
+  const userAgent = request.headers.get("user-agent") || "node-fetch"
+  const ipAddress = getIpAddress(request)
 
-  const response = await API.link.redirectLinkRequest(payload, apiHelper)
-
-  // set a cookie for the visitor
   const headers = new Headers()
   headers.append(
     "Set-Cookie",
-    await visitorCookie.serialize({
-      visitor: payload.visitor
-    })
+    await visitorCookie.serialize({ visitor })
   )
 
-  if (response.status === 200) {
-    return redirect(response.data.url, {
-      headers
+  try {
+    const response = await findUniqueLink({
+      path,
+      unlock: true,
+      body: {
+        referrer: request.headers.get("referer"),
+        source,
+        secretCode,
+        visitor
+      },
+      userAgent,
+      ipAddress
     })
-  } else {
+
+    return redirect(response.data.url!, { headers })
+  } catch (err: any) {
     throw new Response("", {
-      status: response.status,
-      statusText: response.message,
+      status: err.status || 500,
+      statusText: err.message,
       headers
     })
   }
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const payload = await generatePayload(request)
+  const currentUrl = new URL(request.url)
+  const path = currentUrl.pathname.split("/").pop() || ""
+  const source = currentUrl.searchParams.get("s") || "web"
+  const visitor = await getVisitor(request)
+  const userAgent = request.headers.get("user-agent") || "node-fetch"
+  const ipAddress = getIpAddress(request)
 
-  const response = await API.link.redirectLinkRequest(payload, apiHelper)
-
-  // set a cookie for the visitor
   const headers = new Headers()
   headers.append(
     "Set-Cookie",
-    await visitorCookie.serialize({
-      visitor: payload.visitor
-    })
+    await visitorCookie.serialize({ visitor })
   )
 
-  if (response.status === 200) {
+  try {
+    const response = await findUniqueLink({
+      path,
+      unlock: false,
+      body: {
+        referrer: request.headers.get("referer"),
+        source,
+        visitor
+      },
+      userAgent,
+      ipAddress
+    })
+
     let metaData = null
     if (response.data.url) {
       metaData = await fetchMetadata(response.data.url)
@@ -159,18 +151,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
         response: {
           url: response.data.url,
           hasSecretCode: response.data.hasSecretCode,
-          payload,
           metaData
         }
       },
-      {
-        headers
-      }
+      { headers }
     )
-  } else {
+  } catch (err: any) {
     throw new Response("", {
-      status: response.status,
-      statusText: response.message,
+      status: err.status || 500,
+      statusText: err.message,
       headers
     })
   }
@@ -187,25 +176,20 @@ export default function Redirect() {
   const [redirectFailed, setRedirectFailed] = useState(false)
 
   useEffect(() => {
-    // Only run on client-side
     if (typeof window === "undefined") return
 
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
       return () => clearTimeout(timer)
     } else {
-      // Attempt to redirect
       window.location.href = data.response.url
 
-      // Fallback if redirect doesn't happen immediately
       const fallbackTimer = setTimeout(() => setRedirectFailed(true), 2000)
       return () => clearTimeout(fallbackTimer)
     }
   }, [countdown, data.response.url])
 
-  if (!data) {
-    return <div>Loading...</div>
-  }
+  if (!data) return <div>Loading...</div>
 
   const { response } = data
   if (response.hasSecretCode) {
@@ -251,15 +235,12 @@ export default function Redirect() {
             {data.response.url}
           </a>
         </p>
-
         <p className="text-lg font-bold mb-3">
           Redirecting in {countdown} second{countdown !== 1 ? "s" : ""}...
         </p>
-
         {redirectFailed && (
           <p className="text-gray-500">
-            If you are not redirected automatically, please click the link
-            above.
+            If you are not redirected automatically, please click the link above.
           </p>
         )}
       </div>

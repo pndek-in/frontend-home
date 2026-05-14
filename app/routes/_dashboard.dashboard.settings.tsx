@@ -4,10 +4,13 @@ import { useTranslation } from "react-i18next"
 import { Icon } from "@iconify-icon/react"
 import { useActionData } from "@remix-run/react"
 
-import { apiHelper } from "~/utils/helpers"
-import API from "~/utils/api"
 import { userState, globalToast } from "~/services/cookies.server"
 import { Dashboard } from "~/components"
+import { authenticate } from "~/server/auth/authenticate.server"
+import {
+  generateTelegramToken,
+  requestVerifEmail
+} from "~/server/services/auth.server"
 
 export const meta: MetaFunction = () => {
   const { t } = useTranslation("meta")
@@ -18,41 +21,35 @@ export const meta: MetaFunction = () => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
   const headers = new Headers()
-
   const formData = await request.formData()
   const intent = formData.get("intent")
 
-  const payload = {
-    token: user.token
-  }
   let telegramToken = ""
   let isEmailSent = false
 
-  if (intent === "generate-telegram-token") {
-    const response = await API.auth.generateTelegramToken(payload, apiHelper)
-    telegramToken = response.data.token
-  } else if (intent === "request-verification-email") {
-    const response = await API.auth.requestVerificationEmail(payload, apiHelper)
+  try {
+    const userData = await authenticate(user.token)
 
-    if (response.status === 200) {
+    if (intent === "generate-telegram-token") {
+      const response = generateTelegramToken(userData)
+      telegramToken = response.data.token
+    } else if (intent === "request-verification-email") {
+      await requestVerifEmail(userData)
       isEmailSent = true
 
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: "Email sent!",
-          type: "success"
-        })
-      )
-    } else {
-      headers.append(
-        "Set-Cookie",
-        await globalToast.serialize({
-          content: "Failed to send email!",
-          type: "error"
-        })
+        await globalToast.serialize({ content: "Email sent!", type: "success" })
       )
     }
+  } catch {
+    headers.append(
+      "Set-Cookie",
+      await globalToast.serialize({
+        content: "Failed to send email!",
+        type: "error"
+      })
+    )
   }
 
   return json({ telegramToken, isEmailSent }, { headers })

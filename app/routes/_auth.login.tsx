@@ -4,13 +4,13 @@ import { useActionData } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 
 import { AuthForm } from "~/components/shared"
-import { apiHelper } from "~/utils/helpers"
 import { userState, globalToast } from "~/services/cookies.server"
-import API from "~/utils/api"
+import { login } from "~/server/services/auth.server"
 
 type ActionError = {
   email?: string
   password?: string
+  toast?: string
 }
 
 export const handle = {
@@ -28,39 +28,22 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
-
-  // Extract and convert values
   const email = formData.get("email") as string
   const password = formData.get("password") as string
 
   const errors: ActionError = {}
 
-  // Validation
-  if (!email) {
-    errors.email = "Email is required"
-  }
+  if (!email) errors.email = "Email is required"
+  if (!password) errors.password = "Password is required"
+  if (Object.keys(errors).length > 0) return json({ errors })
 
-  if (!password) {
-    errors.password = "Password is required"
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return json({ errors })
-  }
-
-  // Construct the payload with the correct type
-  const payload = { email, password }
-  const response = await API.auth.loginRequest(payload, apiHelper)
-
-  if (response.status === 200) {
+  try {
+    const response = await login({ email, password })
     const headers = new Headers()
 
     headers.append(
       "Set-Cookie",
-      await globalToast.serialize({
-        content: response.message,
-        type: "success"
-      })
+      await globalToast.serialize({ content: response.message, type: "success" })
     )
     headers.append(
       "Set-Cookie",
@@ -68,19 +51,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         token: response.data.token,
         email: response.data.email,
         name: response.data.name,
-        isVerified: response.data.isVerified,
+        isVerified: response.data.isVerified
       })
     )
 
-    return redirect("/dashboard", {
-      headers
-    })
-  } else {
-    return json({
-      errors: {
-        toast: response.message
-      }
-    })
+    return redirect("/dashboard", { headers })
+  } catch (err: any) {
+    return json({ errors: { toast: err.message } })
   }
 }
 

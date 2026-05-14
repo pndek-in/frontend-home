@@ -11,11 +11,12 @@ import {
 } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 
-import { apiHelper, isUrlValid } from "~/utils/helpers"
-import API from "~/utils/api"
+import { isUrlValid } from "~/utils/helpers"
 import { unclaimedLink, globalToast } from "~/services/cookies.server"
 import { GoogleLogin } from "~/components/shared"
 import { Home } from "~/components"
+import { createLinkWithoutAuth } from "~/server/services/link.server"
+import { getHomeStats } from "~/server/services/stats.server"
 
 export const handle = {
   i18n: ["home", "meta"]
@@ -39,54 +40,30 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   let isSuccess = false
 
   if (intent === "create") {
-    const payload = {
-      url: link
-    }
-
     if (!link) {
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: "Link is required!",
-          type: "error"
-        })
+        await globalToast.serialize({ content: "Link is required!", type: "error" })
       )
-
-      return redirect("/", {
-        headers
-      })
+      return redirect("/", { headers })
     }
 
-    if (isUrlValid(link) === false) {
+    if (!isUrlValid(link)) {
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: "Link is not valid!",
-          type: "error"
-        })
+        await globalToast.serialize({ content: "Link is not valid!", type: "error" })
       )
-
-      return redirect("/", {
-        headers
-      })
+      return redirect("/", { headers })
     }
 
-    const response = await API.link.createLinkWithoutAuthRequest(
-      payload,
-      apiHelper
-    )
-
-    if (response.status === 201) {
+    try {
+      const response = await createLinkWithoutAuth({ url: link })
       isSuccess = true
 
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "success"
-        })
+        await globalToast.serialize({ content: response.message, type: "success" })
       )
-
       headers.append(
         "Set-Cookie",
         await unclaimedLink.serialize({
@@ -96,16 +73,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         })
       )
 
-      return redirect("/", {
-        headers
-      })
-    } else {
+      return redirect("/", { headers })
+    } catch (err: any) {
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "error"
-        })
+        await globalToast.serialize({ content: err.message, type: "error" })
       )
     }
   }
@@ -115,27 +87,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const googleClientId = process.env.GOOGLE_CLIENT_ID
-  const response = await API.stats.getHomeStats(apiHelper)
-  const stats = response.data || {
-    totalLinks: 0,
-    totalClicks: 0,
-    totalUsers: 0
-  }
+  const linkData = (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
 
-  const linkData =
-    (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
+  let stats = { totalLinks: 0, totalClicks: 0, totalUsers: 0 }
+  try {
+    const response = await getHomeStats()
+    stats = response.data || stats
+  } catch {}
 
   return json({ googleClientId, stats, linkData })
 }
 
 export default function Index() {
-  const {
-    googleClientId = "",
-    stats,
-    linkData
-  } = useLoaderData<typeof loader>()
+  const { googleClientId = "", stats, linkData } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
-
   const context = useOutletContext() as any
 
   return (

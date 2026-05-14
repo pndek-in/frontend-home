@@ -4,15 +4,15 @@ import { useActionData } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 
 import { AuthForm } from "~/components/shared"
-import { apiHelper } from "~/utils/helpers"
 import { userState, globalToast } from "~/services/cookies.server"
-import API from "~/utils/api"
+import { register } from "~/server/services/auth.server"
 
 type ActionError = {
   name?: string
   email?: string
   password?: string
   confirmPassword?: string
+  toast?: string
 }
 
 export const handle = {
@@ -30,51 +30,29 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
-
-  const name = String(formData.get("name")) as string
-  const email = String(formData.get("email")) as string
-  const password = String(formData.get("password")) as string
-  const confirmPassword =
-    String(formData.get("confirmPassword")) as string
+  const name = String(formData.get("name"))
+  const email = String(formData.get("email"))
+  const password = String(formData.get("password"))
+  const confirmPassword = String(formData.get("confirmPassword"))
 
   const errors: ActionError = {}
 
-  if (!name) {
-    errors.name = "Name is required"
-  }
-
-  if (!email) {
-    errors.email = "Email is required"
-  }
-
-  if (!password) {
-    errors.password = "Password is required"
-  }
-
-  if (!confirmPassword) {
-    errors.confirmPassword = "Confirm Password is required"
-  }
-
-  if (password !== confirmPassword) {
+  if (!name) errors.name = "Name is required"
+  if (!email) errors.email = "Email is required"
+  if (!password) errors.password = "Password is required"
+  if (!confirmPassword) errors.confirmPassword = "Confirm Password is required"
+  if (password !== confirmPassword)
     errors.confirmPassword = "Confirm Password must be same with Password"
-  }
 
-  if (Object.keys(errors).length > 0) {
-    return json({ errors })
-  }
+  if (Object.keys(errors).length > 0) return json({ errors })
 
-  const payload = { name, email, password }
-  const response = await API.auth.registerRequest(payload, apiHelper)
-
-  if (response.status === 201) {
+  try {
+    const response = await register({ name, email, password })
     const headers = new Headers()
 
     headers.append(
       "Set-Cookie",
-      await globalToast.serialize({
-        content: response.message,
-        type: "success"
-      })
+      await globalToast.serialize({ content: response.message, type: "success" })
     )
     headers.append(
       "Set-Cookie",
@@ -86,15 +64,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       })
     )
 
-    return redirect("/dashboard", {
-      headers
-    })
-  } else {
-    return json({
-      errors: {
-        toast: response.message
-      }
-    })
+    return redirect("/dashboard", { headers })
+  } catch (err: any) {
+    return json({ errors: { toast: err.message } })
   }
 }
 
