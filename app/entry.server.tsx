@@ -8,7 +8,7 @@ import { PassThrough } from "stream"
 import { createReadableStreamFromReadable } from "@remix-run/node"
 import type { EntryContext } from "@remix-run/node"
 import { RemixServer } from "@remix-run/react"
-import isbot from "isbot"
+import { isbot } from "isbot"
 import { renderToPipeableStream } from "react-dom/server"
 import { createInstance } from "i18next"
 import type { i18n as i18nType } from "i18next"
@@ -18,6 +18,15 @@ import Backend from "i18next-fs-backend"
 import i18n from "~/i18n" // your i18n configuration file
 import { resolve } from "node:path"
 import { getLocale } from "~/utils/helpers"
+// antd's rc-virtual-list uses useLayoutEffect for DOM measurements which can't
+// run during SSR. Suppress the React warning — the app hydrates correctly.
+if (typeof document === "undefined") {
+  const originalError = console.error.bind(console)
+  console.error = (...args: unknown[]) => {
+    if (typeof args[0] === "string" && args[0].includes("useLayoutEffect")) return
+    originalError(...args)
+  }
+}
 
 const ABORT_DELAY = 5000
 

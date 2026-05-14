@@ -12,13 +12,17 @@ import { useState } from "react"
 
 import { Dashboard } from "~/components"
 import { UnclaimedLink } from "~/components/shared"
-import { apiHelper, dateHelper, isUrlValid } from "~/utils/helpers"
+import { dateHelper, isUrlValid } from "~/utils/helpers"
+import { userState, globalToast, unclaimedLink } from "~/services/cookies.server"
+import { authenticate } from "~/server/auth/authenticate.server"
+import { authorizeLink } from "~/server/auth/authorize-link.server"
 import {
-  userState,
-  globalToast,
-  unclaimedLink
-} from "~/services/cookies.server"
-import API from "~/utils/api"
+  getLinkList,
+  createLink,
+  updateLink,
+  updateLinkStatus,
+  claimLink
+} from "~/server/services/link.server"
 
 export const meta: MetaFunction = () => {
   const { t } = useTranslation("meta")
@@ -28,59 +32,35 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
-  const linkData =
-    (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
+  const linkData = (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
   const { searchParams } = new URL(request.url)
   const status = searchParams.get("status")
-  let links = [] as any
-  let lists = [] as any
-
-  const response = await API.link.getLinkListRequest(
-    {
-      token: user.token,
-      status: status === "active" ? 1 : 0
-    },
-    apiHelper
-  )
-
-  if (response.status === 200) {
-    links = response.data
-  }
 
   if (!(status === "active" || status === "inactive")) {
     return redirect("/dashboard/links?status=active")
-  } else {
-    lists = links.filter((link: any) => {
-      if (status === "active") {
-        return link.status === 1
-      } else {
-        return link.status === 0
-      }
-    })
   }
+
+  const statusNum = status === "active" ? 1 : 0
+  let lists: any[] = []
+
+  try {
+    const userData = await authenticate(user.token)
+    lists = await getLinkList(userData.userId, statusNum)
+  } catch {}
 
   const masonryLists = {
     left: lists.filter((_: any, i: number) => i % 2 === 0),
     right: lists.filter((_: any, i: number) => i % 2 === 1)
   }
 
-  return json({
-    lists,
-    masonryLists,
-    status: status === "active" ? 1 : 0,
-    linkData
-  })
+  return json({ lists, masonryLists, status: statusNum, linkData })
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = (await userState.parse(request.headers.get("Cookie"))) || {}
+  if (!user.token) return redirect("/login")
 
-  if (!user.token) {
-    redirect("/login")
-  }
-
-  const linkData =
-    (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
+  const linkData = (await unclaimedLink.parse(request.headers.get("Cookie"))) || {}
   const headers = new Headers()
   const formData = await request.formData()
   const intent = formData.get("intent")
@@ -94,181 +74,85 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if ((intent === "edit" || intent === "archive") && !user.isVerified) {
     headers.append(
       "Set-Cookie",
-      await globalToast.serialize({
-        content: "Please verify your email",
-        type: "error"
-      })
+      await globalToast.serialize({ content: "Please verify your email", type: "error" })
     )
-
-    return redirect("/dashboard/links", {
-      headers
-    })
+    return redirect("/dashboard/links", { headers })
   }
 
-  if (intent === "create") {
-    if (!link) {
-      headers.append(
-        "Set-Cookie",
-        await globalToast.serialize({
-          content: "Link is required!",
-          type: "error"
-        })
-      )
+  try {
+    const userData = await authenticate(user.token)
 
-      return redirect("/dashboard/links", {
-        headers
-      })
-    }
+    if (intent === "create") {
+      if (!link) {
+        headers.append(
+          "Set-Cookie",
+          await globalToast.serialize({ content: "Link is required!", type: "error" })
+        )
+        return redirect("/dashboard/links", { headers })
+      }
 
-    if (isUrlValid(link) === false) {
-      headers.append(
-        "Set-Cookie",
-        await globalToast.serialize({
-          content: "Link is not valid!",
-          type: "error"
-        })
-      )
+      if (!isUrlValid(link)) {
+        headers.append(
+          "Set-Cookie",
+          await globalToast.serialize({ content: "Link is not valid!", type: "error" })
+        )
+        return redirect("/dashboard/links", { headers })
+      }
 
-      return redirect("/dashboard/links", {
-        headers
-      })
-    }
+      const payload: any = { url: link, description, secretCode }
+      if (expiredAt) {
+        payload.expiredAt = dateHelper.dateToUnixTimestamp(new Date(expiredAt))
+      }
 
-    const payload = {
-      url: link,
-      description,
-      secretCode,
-      token: user.token
-    } as any
-
-    if (expiredAt) {
-      payload["expiredAt"] = dateHelper.dateToUnixTimestamp(
-        new Date(expiredAt)
-      ) as number
-    }
-
-    const response = await API.link.createLinkRequest(payload, apiHelper)
-
-    if (response.status === 201) {
+      const response = await createLink(payload, userData.userId)
       isSuccessful = true
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "success"
-        })
+        await globalToast.serialize({ content: response.message, type: "success" })
       )
-    } else {
-      headers.append(
-        "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "error"
-        })
-      )
-    }
-  } else if (intent === "edit") {
-    const linkId = formData.get("linkId") as string
-    const path = formData.get("path") as string
-    const payload = {
-      linkId: +linkId,
-      token: user.token,
-      path: path,
-      description,
-      secretCode
-    } as any
+    } else if (intent === "edit") {
+      const linkId = Number(formData.get("linkId"))
+      const path = formData.get("path") as string
+      const existingLink = await authorizeLink(linkId, userData.userId)
 
-    if (expiredAt) {
-      payload["expiredAt"] = dateHelper.dateToUnixTimestamp(
-        new Date(expiredAt)
-      ) as number
-    }
+      const payload: any = { path, description, secretCode }
+      if (expiredAt) {
+        payload.expiredAt = dateHelper.dateToUnixTimestamp(new Date(expiredAt))
+      }
 
-    const response = await API.link.editLinkRequest(payload, apiHelper)
-
-    if (response.status === 200) {
+      const response = await updateLink(linkId, existingLink.path, payload)
       isSuccessful = true
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "success"
-        })
+        await globalToast.serialize({ content: response.message, type: "success" })
       )
-    } else {
-      headers.append(
-        "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "error"
-        })
-      )
-    }
-  } else if (intent === "archive" || intent === "restore") {
-    const linkId = formData.get("linkId") as string
-    const payload = {
-      linkId: +linkId,
-      token: user.token,
-      status: intent === "archive" ? 0 : 1
-    } as any
+    } else if (intent === "archive" || intent === "restore") {
+      const linkId = Number(formData.get("linkId"))
+      const newStatus = intent === "archive" ? 0 : 1
 
-    const response = await API.link.archiveUnarchiveLinkRequest(
-      payload,
-      apiHelper
-    )
-
-    if (response.status === 200) {
+      const response = await updateLinkStatus(linkId, newStatus)
       isSuccessful = true
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "success"
-        })
+        await globalToast.serialize({ content: response.message, type: "success" })
       )
-    } else {
-      headers.append(
-        "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "error"
-        })
-      )
-    }
-  } else if (intent === "claim") {
-    const payload = {
-      id: linkData.id,
-      token: user.token
-    }
-
-    const response = await API.link.claimLinkRequest(payload, apiHelper)
-
-    if (response.status === 200) {
+    } else if (intent === "claim") {
+      const response = await claimLink(linkData.id, userData.userId)
       isSuccessful = true
       headers.append(
         "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "success"
-        })
+        await globalToast.serialize({ content: response.message, type: "success" })
       )
-    } else {
-      headers.append(
-        "Set-Cookie",
-        await globalToast.serialize({
-          content: response.message,
-          type: "error"
-        })
-      )
-    }
-
-    if (response.status !== 401) {
       headers.append(
         "Set-Cookie",
         await unclaimedLink.serialize({ id: "" }, { path: "/" })
       )
     }
-
+  } catch (err: any) {
+    headers.append(
+      "Set-Cookie",
+      await globalToast.serialize({ content: err.message, type: "error" })
+    )
   }
 
   return json({ success: isSuccessful }, { headers })
@@ -278,8 +162,7 @@ export default function DashboardLinks() {
   const { t } = useTranslation("dashboard")
   const navigate = useNavigate()
   const actionData = useActionData<typeof action>()
-  const { lists, status, masonryLists, linkData } =
-    useLoaderData<typeof loader>()
+  const { lists, status, masonryLists, linkData } = useLoaderData<typeof loader>()
   const isSuccess = actionData?.success
 
   const [activeSegment, setActiveSegment] = useState(status)
@@ -301,14 +184,8 @@ export default function DashboardLinks() {
           block
           size="large"
           options={[
-            {
-              label: t("active-link"),
-              value: 1
-            },
-            {
-              label: t("inactive-link"),
-              value: 0
-            }
+            { label: t("active-link"), value: 1 },
+            { label: t("inactive-link"), value: 0 }
           ]}
           value={activeSegment}
           onChange={(value) => changeTab(+value)}

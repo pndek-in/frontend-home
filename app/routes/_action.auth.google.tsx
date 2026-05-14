@@ -1,27 +1,21 @@
 import { redirect } from "@remix-run/node"
 import type { ActionFunctionArgs } from "@remix-run/node"
 
-import { apiHelper } from "~/utils/helpers"
 import { userState, globalToast } from "~/services/cookies.server"
-import API from "~/utils/api"
+import { googleAuth } from "~/server/services/auth.server"
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData()
   const credential = form.get("credential") as string
-  const g_csrf_token = form.get("g_csrf_token") as string
-
-  const payload = { credential, g_csrf_token }
-  const response = await API.auth.googleAuthRequest(payload, apiHelper)
 
   const headers = new Headers()
 
-  if (response.status === 200 || response.status === 201) {
+  try {
+    const response = await googleAuth(credential)
+
     headers.append(
       "Set-Cookie",
-      await globalToast.serialize({
-        content: response.message,
-        type: "success"
-      })
+      await globalToast.serialize({ content: response.message, type: "success" })
     )
     headers.append(
       "Set-Cookie",
@@ -33,20 +27,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       })
     )
 
-    return redirect("/dashboard", {
-      headers
-    })
-  } else {
+    return redirect("/dashboard", { headers })
+  } catch (err: any) {
     headers.append(
       "Set-Cookie",
-      await globalToast.serialize({
-        content: response.message,
-        type: "error"
-      })
+      await globalToast.serialize({ content: err.message, type: "error" })
     )
 
-    return redirect("/", {
-      headers
-    })
+    return redirect("/", { headers })
   }
 }

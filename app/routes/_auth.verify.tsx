@@ -4,9 +4,8 @@ import { useLoaderData } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 import { useState, useEffect } from "react"
 
-import { apiHelper } from "~/utils/helpers"
-import API from "~/utils/api"
 import { userState } from "~/services/cookies.server"
+import { verifyEmail } from "~/server/services/auth.server"
 
 export const handle = {
   i18n: ["meta"]
@@ -26,15 +25,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { searchParams } = new URL(request.url)
   const verifyToken = searchParams.get("t")
 
-  if (!verifyToken) {
-    return redirect("/404", { headers })
-  }
+  if (!verifyToken) return redirect("/404", { headers })
 
-  const payload = {
-    token: verifyToken || ""
+  let isVerificationSuccess = false
+  try {
+    await verifyEmail(verifyToken)
+    isVerificationSuccess = true
+  } catch {
+    isVerificationSuccess = false
   }
-  const response = await API.auth.verifyEmail(payload, apiHelper)
-  const isVerificationSuccess = response.status === 200
 
   headers.append(
     "Set-Cookie",
@@ -50,12 +49,11 @@ export default function Index() {
 
   const [timer, setTimer] = useState(5)
 
-  // countdown and redirect to /login
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prev) => prev - 1)
     }, 1000)
-    
+
     if (timer === 0) {
       clearInterval(interval)
       window.location.href = "/login"
@@ -71,7 +69,6 @@ export default function Index() {
           ? t("email-verified")
           : t("email-verification-failed")}
       </p>
-
       <p>{t("will-redirect", { timer })}</p>
     </div>
   )
