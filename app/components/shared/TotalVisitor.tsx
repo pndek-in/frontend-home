@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -6,9 +7,12 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 } from "chart.js"
 import { Line } from "react-chartjs-2"
+
+import { Card } from "~/components/ui/card"
 
 ChartJS.register(
   CategoryScale,
@@ -17,7 +21,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 )
 
 type DashboardTotalVisitorProps = {
@@ -35,14 +40,26 @@ export default function DashboardTotalVisitor({
   title,
   isVerified
 }: DashboardTotalVisitorProps) {
+  // Resolve the themed accent color from CSS tokens so the chart flips with
+  // light/dark. Falls back to JLDS emerald before hydration.
+  const [accent, setAccent] = useState("#10b981")
+  useEffect(() => {
+    const styles = getComputedStyle(document.documentElement)
+    const value = styles.getPropertyValue("--accent").trim()
+    if (value) setAccent(value)
+  }, [])
+
   const chartData = {
     labels,
     datasets: [
       {
         label,
         data,
-        borderColor: "black",
-        backgroundColor: "black"
+        borderColor: accent,
+        backgroundColor: `${accent}1a`,
+        pointBackgroundColor: accent,
+        fill: true,
+        tension: 0.35
       }
     ]
   }
@@ -57,11 +74,13 @@ export default function DashboardTotalVisitor({
   }
 
   return (
-    <div className="bg-white p-4 rounded-md">
-      <h2 className=" text-center font-semibold text-lg mb-4">{title}</h2>
-      <div className={isVerified ? "" : "blur-sm select-none"}>
-        <Line options={options} data={chartData} />
-      </div>
-    </div>
+    <Card elevation="raised">
+      <Card.Header title={title} />
+      <Card.Body className="pt-0">
+        <div className={isVerified ? "" : "select-none blur-sm"}>
+          <Line options={options} data={chartData} />
+        </div>
+      </Card.Body>
+    </Card>
   )
 }

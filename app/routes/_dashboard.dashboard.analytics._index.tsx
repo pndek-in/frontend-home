@@ -11,12 +11,12 @@ import {
   ShouldRevalidateFunction
 } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
-import { Icon } from "@iconify-icon/react"
 import dayjs from "dayjs"
 
 import { dateHelper } from "~/utils/helpers"
 import { userState } from "~/services/cookies.server"
 import { Dashboard } from "~/components"
+import PageHeader from "~/components/dashboard/PageHeader"
 import { authenticate } from "~/server/auth/authenticate.server"
 import { getUserStats } from "~/server/services/stats.server"
 
@@ -93,12 +93,11 @@ export default function DashboardAnalytics() {
 
   return (
     <>
-      <div className="flex items-center space-x-4 bg-white p-4 rounded-md h-full mb-4">
-        <Icon icon="line-md:document-report" className="text-2xl sm:text-4xl" />
-        <h1 className=" text-2xl sm:text-4xl font-semibold">
-          {t("analytics")}
-        </h1>
-      </div>
+      <PageHeader
+        icon="line-md:document-report"
+        title={t("analytics")}
+        subtitle={t("page-analytics-subtitle")}
+      />
       <Dashboard.AnalyticPage
         action="/dashboard/analytics"
         maxRange={maxRange}

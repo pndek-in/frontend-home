@@ -7,11 +7,13 @@ import type {
 import { useActionData, useLoaderData, useNavigate } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@iconify-icon/react"
-import { Segmented } from "antd"
 import { useState } from "react"
 
 import { Dashboard } from "~/components"
 import { UnclaimedLink } from "~/components/shared"
+import { SegmentedControl } from "~/components/ui/segmented-control"
+import { EmptyState } from "~/components/ui/empty-state"
+import PageHeader from "~/components/dashboard/PageHeader"
 import { dateHelper, isUrlValid } from "~/utils/helpers"
 import { userState, globalToast, unclaimedLink } from "~/services/cookies.server"
 import { authenticate } from "~/server/auth/authenticate.server"
@@ -165,52 +167,70 @@ export default function DashboardLinks() {
   const { lists, status, masonryLists, linkData } = useLoaderData<typeof loader>()
   const isSuccess = actionData?.success
 
-  const [activeSegment, setActiveSegment] = useState(status)
+  const [activeSegment, setActiveSegment] = useState(
+    status === 1 ? "active" : "inactive"
+  )
 
-  const changeTab = (value: number) => {
-    const s = value === 1 ? "active" : "inactive"
+  const changeTab = (value: string) => {
     setActiveSegment(value)
-    navigate(`/dashboard/links?status=${s}`)
+    navigate(`/dashboard/links?status=${value}`)
   }
+
+  const hasLinks = lists.length > 0 || !!linkData?.id
 
   return (
     <>
-      <div className="flex items-center space-x-4 bg-white p-4 rounded-md h-full mb-4">
-        <Icon icon="line-md:external-link" className=" text-2xl sm:text-4xl" />
-        <h1 className=" text-2xl sm:text-4xl font-semibold">{t("links")}</h1>
-      </div>
-      <div className="mb-4">
-        <Segmented
-          block
-          size="large"
-          options={[
-            { label: t("active-link"), value: 1 },
-            { label: t("inactive-link"), value: 0 }
-          ]}
-          value={activeSegment}
-          onChange={(value) => changeTab(+value)}
-        />
-      </div>
+      <PageHeader
+        icon="line-md:external-link"
+        title={t("links")}
+        subtitle={t("page-links-subtitle")}
+        action={
+          <SegmentedControl
+            value={activeSegment}
+            onChange={changeTab}
+            aria-label={t("links")}
+            options={[
+              { label: t("active-link"), value: "active" },
+              { label: t("inactive-link"), value: "inactive" }
+            ]}
+          />
+        }
+      />
       <Dashboard.CreateForm isReset={isSuccess} />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-        <div className="hidden lg:flex flex-col space-y-4">
-          {linkData?.id && <UnclaimedLink linkData={linkData} />}
-          {masonryLists.left.map((data: any, i: number) => (
-            <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
-          ))}
+
+      {hasLinks ? (
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="hidden flex-col space-y-4 lg:flex">
+            {linkData?.id && <UnclaimedLink linkData={linkData} />}
+            {masonryLists.left.map((data: any, i: number) => (
+              <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
+            ))}
+          </div>
+          <div className="hidden flex-col space-y-4 lg:flex">
+            {masonryLists.right.map((data: any, i: number) => (
+              <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
+            ))}
+          </div>
+          <div className="flex flex-col space-y-4 lg:hidden">
+            {linkData?.id && <UnclaimedLink linkData={linkData} />}
+            {lists.map((data: any, i: number) => (
+              <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
+            ))}
+          </div>
         </div>
-        <div className="hidden lg:flex flex-col space-y-4">
-          {masonryLists.right.map((data: any, i: number) => (
-            <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
-          ))}
+      ) : (
+        <div className="mt-4 rounded-card border border-line bg-surface p-6 shadow-token">
+          <EmptyState
+            icon={<Icon icon="line-md:external-link" />}
+            title={t("no-links-title")}
+            description={
+              activeSegment === "active"
+                ? t("no-links-active-desc")
+                : t("no-links-inactive-desc")
+            }
+          />
         </div>
-        <div className="lg:hidden flex flex-col space-y-4">
-          {linkData?.id && <UnclaimedLink linkData={linkData} />}
-          {lists.map((data: any, i: number) => (
-            <Dashboard.LinkCard key={i} data={data} isSuccess={isSuccess} />
-          ))}
-        </div>
-      </div>
+      )}
     </>
   )
 }

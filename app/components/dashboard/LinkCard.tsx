@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next"
-import { Tooltip } from "antd"
 import { useState, useCallback } from "react"
 import { Form, useOutletContext } from "@remix-run/react"
 import { Icon } from "@iconify-icon/react"
@@ -8,6 +7,10 @@ import "dayjs/locale/id.js"
 import { toast } from "react-toastify"
 
 import { QRButton, ShareButton, Link } from "~/components/shared"
+import { Card } from "~/components/ui/card"
+import { Badge } from "~/components/ui/badge"
+import { Tooltip } from "~/components/ui/tooltip"
+import { IconButton } from "~/components/ui/icon-button"
 import EditLinkModal from "./EditLinkModal"
 import { numberHelper, dateHelper } from "~/utils/helpers"
 
@@ -41,7 +44,7 @@ export default function LinkCard({ data, isSuccess }: LinkCardProps) {
 
   const copyText = () => {
     navigator.clipboard.writeText(`pndek.in/${data.path}`)
-    toast.success("Copied to clipboard", {
+    toast.success(t("copied"), {
       toastId: "copy-to-clipboard",
       position: "top-center",
       autoClose: 1000
@@ -54,55 +57,74 @@ export default function LinkCard({ data, isSuccess }: LinkCardProps) {
   }, [])
 
   return (
-    <div className=" bg-white shadow-md rounded-md p-4 w-full h-min">
-      <div className="mb-4 pb-4 border-b">
-        <div className=" flex items-center">
-          {data.hasSecretCode && (
-            <Tooltip
-              title="This short url is protected with secret code"
-              placement="top"
-            >
-              <div className=" flex items-center cursor-help">
-                <Icon icon="mdi:lock-check" className="text-xl mr-2" />
-              </div>
-            </Tooltip>
-          )}
-          <button onClick={copyText} className=" text-start">
-            <h2 className=" text-xl font-bold hover:underline cursor-pointer break-all">
-              pndek.in/{data.path}
-            </h2>
-          </button>
+    <Card elevation="raised" className="h-min w-full !overflow-visible">
+      <Card.Body className="space-y-3">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            {data.hasSecretCode && (
+              <Tooltip content="This short url is protected with secret code">
+                <Icon
+                  icon="mdi:lock-check"
+                  className="cursor-help text-lg text-brand-text"
+                />
+              </Tooltip>
+            )}
+            <button onClick={copyText} className="group min-w-0 text-start">
+              <h2 className="break-all text-lg font-bold text-fg group-hover:text-brand-text">
+                pndek.in/{data.path}
+              </h2>
+            </button>
+            {isExpired ? (
+              <Badge color="danger" pill>
+                {t("expired-at").split(" ")[0]}
+              </Badge>
+            ) : data.status === 1 ? (
+              <Badge color="success" pill dot>
+                {t("active-link").split(" ")[0]}
+              </Badge>
+            ) : null}
+          </div>
+          <a
+            href={data.url}
+            target="_blank"
+            rel="noreferrer"
+            className="break-all text-sm font-normal text-fg-muted hover:text-fg hover:underline"
+          >
+            {data.url}
+          </a>
         </div>
-        <a
-          href={data.url}
-          target="_blank"
-          rel="noreferrer"
-          className=" text-sm font-normal text-gray-400 hover:underline cursor-pointer break-all"
-        >
-          {data.url}
-        </a>
-      </div>
-      {data.description && <p className="italic text-sm">{data.description}</p>}
-      <p className=" text-sm">
-        {createdAt} ·{" "}
-        <span className=" font-semibold">
-          {numberHelper.formatNumber(data.totalClick)}
-        </span>{" "}
-        Clicks
-      </p>
-      {data.expiredAt && (
-        <div
-          className={` flex items-center ${isExpired ? "text-red-500" : ""}`}
-        >
-          <Icon icon="mdi:timer-stop-outline" className=" text-sm mr-1" />
-          <p className="text-sm">
-            {isExpired ? `Expired at` : `Expires at`}
-            <span className=" font-semibold"> {expiredAt}</span>
-          </p>
-        </div>
-      )}
 
-      <div className=" flex justify-between w-full mt-4 pt-4 border-t">
+        {data.description && (
+          <p className="text-sm italic text-fg-muted">{data.description}</p>
+        )}
+
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-fg-subtle">
+          <span className="inline-flex items-center gap-1.5">
+            <Icon icon="mdi:cursor-default-click-outline" className="text-base" />
+            <span className="font-semibold text-fg">
+              {numberHelper.formatNumber(data.totalClick)}
+            </span>{" "}
+            {t("clicks")}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Icon icon="mdi:clock-outline" className="text-base" />
+            {createdAt}
+          </span>
+          {data.expiredAt && (
+            <span
+              className={`inline-flex items-center gap-1.5 ${
+                isExpired ? "text-danger" : ""
+              }`}
+            >
+              <Icon icon="mdi:timer-stop-outline" className="text-base" />
+              {isExpired ? t("expired-at") : t("expires-at")}
+              <span className="font-semibold">{expiredAt}</span>
+            </span>
+          )}
+        </div>
+      </Card.Body>
+
+      <Card.Footer className="flex items-center justify-between">
         {isModalVisible && (
           <EditLinkModal
             data={data}
@@ -111,69 +133,65 @@ export default function LinkCard({ data, isSuccess }: LinkCardProps) {
             isModalVisible={isModalVisible}
           />
         )}
-        <div className=" flex space-x-4">
+        <div className="flex items-center gap-1">
           {data.status === 1 && (
             <>
               <Tooltip
-                title={
+                content={
                   context.user?.isVerified
-                    ? "Edit"
+                    ? t("edit-link")
                     : t("tooltip-need-verify-first")
                 }
               >
-                <button
+                <IconButton
+                  aria-label={t("edit-link")}
                   onClick={showModal}
                   disabled={!context.user?.isVerified}
-                  className="cursor-pointer"
                 >
-                  <Icon
-                    icon="mdi:link-edit"
-                    className=" text-xl text-green-500"
-                  />
-                </button>
+                  <Icon icon="mdi:link-edit" className="text-brand-text" />
+                </IconButton>
               </Tooltip>
               <ShareButton path={data.path} />
               <QRButton path={data.path} />
             </>
           )}
 
-          <Tooltip title="Analytics">
-            <>
-              <Link to={`/dashboard/analytics/${data.linkId}`}>
-                <Icon
-                  icon="mdi:chart-areaspline"
-                  className=" text-xl text-purple-500"
-                />
-              </Link>
-            </>
+          <Tooltip content={t("analytics")}>
+            <Link
+              to={`/dashboard/analytics/${data.linkId}`}
+              aria-label={t("analytics")}
+              className="jl-iconbtn jl-iconbtn--ghost jl-iconbtn--md"
+            >
+              <Icon icon="mdi:chart-areaspline" className="text-info" />
+            </Link>
           </Tooltip>
         </div>
-        <Tooltip title={data.status === 1 ? "Archive" : "Restore"}>
-          <div>
-            <Form
-              method="post"
-              action={`/dashboard/links?status=${
-                data.status === 1 ? "active" : "inactive"
-              }`}
+
+        <Tooltip content={data.status === 1 ? t("archive") : t("restore")}>
+          <Form
+            method="post"
+            action={`/dashboard/links?status=${
+              data.status === 1 ? "active" : "inactive"
+            }`}
+          >
+            <input type="hidden" name="linkId" value={data.linkId} />
+            <IconButton
+              type="submit"
+              name="intent"
+              value={data.status === 1 ? "archive" : "restore"}
+              disabled={!context.user?.isVerified}
+              aria-label={data.status === 1 ? t("archive") : t("restore")}
             >
-              <input type="hidden" name="linkId" value={data.linkId} />
-              <button
-                name="intent"
-                value={data.status === 1 ? "archive" : "restore"}
-                disabled={!context.user?.isVerified}
-                className="cursor-pointer"
-              >
-                <Icon
-                  icon={
-                    data.status === 1 ? "mdi:archive-arrow-down" : "mdi:restore"
-                  }
-                  className=" text-xl text-red-500"
-                />
-              </button>
-            </Form>
-          </div>
+              <Icon
+                icon={
+                  data.status === 1 ? "mdi:archive-arrow-down" : "mdi:restore"
+                }
+                className="text-danger"
+              />
+            </IconButton>
+          </Form>
         </Tooltip>
-      </div>
-    </div>
+      </Card.Footer>
+    </Card>
   )
 }

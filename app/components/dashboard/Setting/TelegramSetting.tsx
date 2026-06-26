@@ -2,9 +2,10 @@ import { Form, useOutletContext } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@iconify-icon/react"
 import { toast } from "react-toastify"
-import { Tooltip } from "antd"
 
 import { Button } from "~/components/shared"
+import { Tooltip } from "~/components/ui/tooltip"
+import { IconButton } from "~/components/ui/icon-button"
 
 type TelegramSettingProps = {
   token?: string
@@ -13,76 +14,55 @@ type TelegramSettingProps = {
 export default function TelegramSetting({ token }: TelegramSettingProps) {
   const context = useOutletContext() as any
   const { t } = useTranslation("dashboard")
+  const isVerified = context.user?.isVerified
 
   const copyToken = () => {
     navigator.clipboard.writeText(token || "")
-    toast.success("Copied to clipboard", {
+    toast.success(t("copied"), {
       toastId: "copy-to-clipboard",
       position: "top-center",
       autoClose: 1000
     })
   }
 
-  const GenerateWrapper = ({ children }: { children: React.ReactNode }) => {
-    return context.user?.isVerified ? (
-      <>{children}</>
-    ) : (
-      <Tooltip title={t("tooltip-need-verify-first")}>{children}</Tooltip>
-    )
-  }
+  const GenerateButton = (
+    <Form method="post" action="/dashboard/settings">
+      <Button
+        type="submit"
+        name="intent"
+        value="generate-telegram-token"
+        disabled={!isVerified}
+        isBlock
+      >
+        <Icon icon="mdi:robot-outline" className="mr-1" />
+        {t("generate")}
+      </Button>
+    </Form>
+  )
 
   return (
-    <div className=" bg-white rounded-md p-4 space-y-4">
-      <h2 className=" text-xl sm:text-2xl font-semibold">Telegram Setting</h2>
-      <hr className=" border-gray-400" />
-      <Form
-        method="post"
-        action="/dashboard/settings"
-        className=" grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        <p className=" font-semibold">{t("generate-token-telegram")}:</p>
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 rounded-card border border-line bg-app p-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="max-w-md font-semibold text-fg">
+          {t("generate-token-telegram")}
+        </p>
         {token ? (
-          <div>
-            <p className=" break-all">
-              {token}
-              <span>
-                <button onClick={copyToken}>
-                  <Icon
-                    icon="line-md:clipboard"
-                    className="text-xl ml-2 -mb-1"
-                  />
-                </button>
-              </span>
-            </p>
+          <div className="flex items-center gap-2 rounded-control border border-line bg-surface px-3 py-2">
+            <span className="break-all font-mono text-sm text-fg">{token}</span>
+            <Tooltip content={t("copied")}>
+              <IconButton aria-label={t("copied")} onClick={copyToken}>
+                <Icon icon="line-md:clipboard" />
+              </IconButton>
+            </Tooltip>
           </div>
+        ) : isVerified ? (
+          GenerateButton
         ) : (
-          <div className=" flex justify-end">
-            <GenerateWrapper>
-              <Button
-                id=" generate-token-btn-desktop"
-                type="submit"
-                className=" hidden sm:flex"
-                name="intent"
-                value="generate-telegram-token"
-                disabled={!context.user?.isVerified}
-              >
-                {t("generate")}
-              </Button>
-              <Button
-                id=" generate-token-btn-mobile"
-                type="submit"
-                className=" flex sm:hidden"
-                name="intent"
-                value="generate-telegram-token"
-                isBlock
-                disabled={!context.user?.isVerified}
-              >
-                {t("generate")}
-              </Button>
-            </GenerateWrapper>
-          </div>
+          <Tooltip content={t("tooltip-need-verify-first")}>
+            {GenerateButton}
+          </Tooltip>
         )}
-      </Form>
+      </div>
     </div>
   )
 }

@@ -1,0 +1,59 @@
+.jl-dialog__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: hsl(var(--shadow-color) / 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  animation: jl-dialog-fade var(--duration-base) var(--ease-standard);
+}
+.jl-dialog__overlay[hidden] { display: none; } /* author display:flex would otherwise override [hidden] */
+@keyframes jl-dialog-fade { from { opacity: 0; } to { opacity: 1; } }
+.jl-dialog {
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow: auto;
+  background: var(--surface-overlay);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--elevation-modal);
+  animation: jl-dialog-pop var(--duration-base) var(--ease-emphasized);
+}
+.jl-dialog--sm { max-width: 380px; }
+.jl-dialog--lg { max-width: 620px; }
+@keyframes jl-dialog-pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+.jl-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+}
+.jl-dialog__header-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.jl-dialog__title { font-size: var(--text-xl); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-tight); }
+.jl-dialog__desc { font-size: var(--text-base); color: var(--text-secondary); line-height: var(--leading-normal); }
+.jl-dialog__close {
+  flex: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+  margin: -2px -2px 0 0;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-control);
+}
+.jl-dialog__close:hover { background: var(--surface-active); color: var(--text-primary); }
+.jl-dialog__body { padding: 0 var(--space-6); }
+.jl-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jl-dialog__overlay, .jl-dialog { animation: none; }
+}

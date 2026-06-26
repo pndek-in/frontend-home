@@ -1,8 +1,10 @@
 import { useState } from "react"
-import { Tooltip, Popover } from "antd"
 import { Icon } from "@iconify-icon/react"
 
 import Link from "./Link"
+import { Popover } from "~/components/ui/popover"
+import { Tooltip } from "~/components/ui/tooltip"
+import { IconButton } from "~/components/ui/icon-button"
 
 type ShareButtonProps = {
   path: string
@@ -12,65 +14,52 @@ export default function ShareButton({ path }: ShareButtonProps) {
   const [isVisible, setIsVisible] = useState(false)
   const link = `https://pndek.in/${path}`
 
-  const handleVisibleChange = (isVisible: boolean) => {
-    setIsVisible(isVisible)
-  }
-
-  const ShareMenu = () => {
-    const socialMedias = [
-      {
-        name: "Facebook",
-        icon: "logos:facebook",
-        link: `https://www.facebook.com/sharer/sharer.php?u=${link}`
-      },
-      {
-        name: "Twitter",
-        icon: "logos:twitter",
-        link: `https://twitter.com/intent/tweet?url=${link}`
-      },
-      {
-        name: "WhatsApp",
-        icon: "logos:whatsapp",
-        link: `https://wa.me/?text=${link}`
-      }
-    ]
-
-    return (
-      <div className="flex flex-col items-start gap-2">
-        {socialMedias.map((socialMedia, index) => (
-          <Link
-            key={index}
-            to={socialMedia.link}
-            target="_blank"
-            rel="noreferrer"
-            className=" flex items-center"
-          >
-            <Icon icon={socialMedia.icon} className=" max-w-3 mr-2" />
-            Share to {socialMedia.name}
-          </Link>
-        ))}
-      </div>
-    )
-  }
+  const socialMedias = [
+    {
+      name: "Facebook",
+      icon: "logos:facebook",
+      link: `https://www.facebook.com/sharer/sharer.php?u=${link}`
+    },
+    {
+      name: "Twitter",
+      icon: "logos:twitter",
+      link: `https://twitter.com/intent/tweet?url=${link}`
+    },
+    {
+      name: "WhatsApp",
+      icon: "logos:whatsapp-icon",
+      link: `https://wa.me/?text=${link}`
+    }
+  ]
 
   return (
-    <Popover
-      content={ShareMenu}
-      trigger="click"
-      open={isVisible}
-      onOpenChange={handleVisibleChange}
-      placement="right"
-    >
-      <>
-        <Tooltip title="Share">
-          <button>
-            <Icon
-              icon="mdi:share-variant-outline"
-              className=" text-xl text-blue-500"
-            />
-          </button>
-        </Tooltip>
-      </>
-    </Popover>
+    <Tooltip content="Share">
+      <Popover
+        open={isVisible}
+        onOpenChange={setIsVisible}
+        side="bottom"
+        align="center"
+        trigger={
+          <IconButton aria-label="Share">
+            <Icon icon="mdi:share-variant-outline" className="text-info" />
+          </IconButton>
+        }
+      >
+        <div className="flex flex-col items-start gap-1">
+          {socialMedias.map((socialMedia, index) => (
+            <Link
+              key={index}
+              to={socialMedia.link}
+              target="_blank"
+              rel="noreferrer"
+              className="flex w-full items-center gap-2 rounded-control px-2 py-1.5 text-fg hover:bg-surface-hover"
+            >
+              <Icon icon={socialMedia.icon} className="text-lg" />
+              Share to {socialMedia.name}
+            </Link>
+          ))}
+        </div>
+      </Popover>
+    </Tooltip>
   )
 }

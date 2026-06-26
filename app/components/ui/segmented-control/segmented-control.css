@@ -1,0 +1,56 @@
+.jl-segmented {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 3px;
+  gap: 2px;
+  position: relative;
+}
+.jl-segmented--full { display: flex; width: 100%; }
+.jl-segmented--sm { padding: 2px; border-radius: var(--radius-md); }
+
+.jl-segmented__option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: 1 0 auto;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius-lg) - 3px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.jl-segmented--full .jl-segmented__option { flex: 1; }
+.jl-segmented--sm .jl-segmented__option { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); border-radius: calc(var(--radius-md) - 2px); }
+.jl-segmented__option svg { width: 16px; height: 16px; }
+.jl-segmented__option:hover:not([aria-checked="true"]):not(:disabled) { color: var(--text-primary); }
+.jl-segmented__option:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 1px; }
+.jl-segmented__option[aria-checked="true"] { color: var(--text-primary); font-weight: var(--weight-semibold); }
+.jl-segmented__option:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.jl-segmented__thumb {
+  position: absolute;
+  z-index: 0;
+  top: 3px;
+  bottom: 3px;
+  background: var(--surface-card);
+  border-radius: calc(var(--radius-lg) - 3px);
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--duration-base) var(--ease-emphasized), width var(--duration-base) var(--ease-emphasized);
+}
+.jl-segmented--sm .jl-segmented__thumb { top: 2px; bottom: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jl-segmented__thumb { transition: none; }
+}

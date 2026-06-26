@@ -1,11 +1,14 @@
 import { json } from "@remix-run/node"
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node"
 import { useTranslation } from "react-i18next"
-import { Icon } from "@iconify-icon/react"
+import { useState } from "react"
 import { useActionData } from "@remix-run/react"
 
 import { userState, globalToast } from "~/services/cookies.server"
 import { Dashboard } from "~/components"
+import { Tabs } from "~/components/ui/tabs"
+import { Card } from "~/components/ui/card"
+import PageHeader from "~/components/dashboard/PageHeader"
 import { authenticate } from "~/server/auth/authenticate.server"
 import {
   generateTelegramToken,
@@ -58,18 +61,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function DashboardSettings() {
   const { t } = useTranslation("dashboard")
   const actionData = useActionData<typeof action>()
+  const [tab, setTab] = useState("account")
 
   return (
     <>
-      <div className="flex items-center space-x-4 bg-white p-4 rounded-md h-full mb-4">
-        <Icon icon="line-md:cog-filled-loop" className="text-2xl sm:text-4xl" />
-        <h1 className=" text-2xl sm:text-4xl font-semibold">{t("settings")}</h1>
-      </div>
+      <PageHeader
+        icon="line-md:cog-filled-loop"
+        title={t("settings")}
+        subtitle={t("page-settings-subtitle")}
+      />
 
-      <div className=" bg-white rounded-md p-4">
-        <Dashboard.Setting.UserSetting isEmailSent={actionData?.isEmailSent} />
-        <Dashboard.Setting.TelegramSetting token={actionData?.telegramToken} />
-      </div>
+      <Card elevation="raised" className="!overflow-visible">
+        <Card.Body className="space-y-5">
+          <Tabs
+            variant="pill"
+            value={tab}
+            onChange={setTab}
+            items={[
+              { value: "account", label: t("user-setting") },
+              { value: "telegram", label: t("telegram-setting") }
+            ]}
+          />
+          {tab === "account" ? (
+            <Dashboard.Setting.UserSetting
+              isEmailSent={actionData?.isEmailSent}
+            />
+          ) : (
+            <Dashboard.Setting.TelegramSetting
+              token={actionData?.telegramToken}
+            />
+          )}
+        </Card.Body>
+      </Card>
     </>
   )
 }

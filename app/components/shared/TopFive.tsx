@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import { useOutletContext } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
 
+import { Card } from "~/components/ui/card"
+
 type DashboardTopFiveProps = {
   labels: string[]
   title: string
@@ -27,33 +29,39 @@ export default function DashboardTopFive({
   }
 
   return (
-    <div className=" h-min bg-white rounded-md p-4 border shadow-md">
-      <h2 className=" text-center font-semibold text-lg mb-4">{t(title)}</h2>
-      <table className=" h-min w-full">
-        <thead className=" border">
-          <tr>
-            <th className="text-left px-3 py-2">{t(columnTitle)}</th>
-            <th className="text-left px-3 py-2">{t("total")}</th>
-          </tr>
-        </thead>
-        <tbody className="">
-          {labels.map((label, index) => (
-            <tr
-              key={index}
-              className={`${
-                context.user.isVerified ? "" : " blur-sm select-none"
-              } border hover:bg-slate-300`}
-            >
-              <td className=" text-left px-3 py-2">
-                {context.user.isVerified ? t(label) : "Lorem Ipsum"}
-              </td>
-              <td className=" text-left px-3 py-2">
-                {context.user.isVerified ? data[index] : 0}
-              </td>
+    <Card elevation="raised" className="h-min">
+      <Card.Header title={t(title)} />
+      <Card.Body className="pt-0">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-line text-fg-muted">
+              <th className="px-3 py-2 text-left font-semibold">
+                {t(columnTitle)}
+              </th>
+              <th className="px-3 py-2 text-right font-semibold">
+                {t("total")}
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {labels.map((label, index) => (
+              <tr
+                key={index}
+                className={`border-b border-line-subtle text-fg transition-colors hover:bg-surface-hover ${
+                  context.user.isVerified ? "" : "select-none blur-sm"
+                }`}
+              >
+                <td className="px-3 py-2 text-left">
+                  {context.user.isVerified ? t(label) : "Lorem Ipsum"}
+                </td>
+                <td className="px-3 py-2 text-right font-semibold">
+                  {context.user.isVerified ? data[index] : 0}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card.Body>
+    </Card>
   )
 }

@@ -1,7 +1,9 @@
 import { Form, useOutletContext } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
+import { Icon } from "@iconify-icon/react"
 
 import { Button } from "~/components/shared"
+import { Badge } from "~/components/ui/badge"
 
 type UserSettingProps = {
   isEmailSent?: boolean
@@ -10,29 +12,39 @@ type UserSettingProps = {
 export default function UserSetting({ isEmailSent }: UserSettingProps) {
   const context = useOutletContext() as any
   const { t } = useTranslation("dashboard")
+  const isVerified = context.user?.isVerified
 
   return (
-    <div className=" bg-white rounded-md p-4 space-y-4">
-      <h2 className=" text-xl sm:text-2xl font-semibold">User Setting</h2>
-      <hr className=" border-gray-400" />
-      <Form
-        method="post"
-        action="/dashboard/settings"
-        className=" grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        <p className=" font-semibold">{t("request-verification-email")}:</p>
-        <div className=" flex justify-end">
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 rounded-card border border-line bg-app p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-fg">
+              {t("request-verification-email")}
+            </p>
+            {isVerified ? (
+              <Badge color="success" pill>
+                <Icon icon="mdi:check-decagram" /> Verified
+              </Badge>
+            ) : (
+              <Badge color="warning" pill>
+                Unverified
+              </Badge>
+            )}
+          </div>
+        </div>
+        <Form method="post" action="/dashboard/settings">
           <Button
             type="submit"
-            className=" bg-blue-500 hover:bg-blue-600 text-white font-semibold"
-            disabled={context.user?.isVerified || isEmailSent}
+            variant="secondary"
+            disabled={isVerified || isEmailSent}
             name="intent"
             value="request-verification-email"
           >
             {isEmailSent ? t("email-sent") : t("send-email")}
           </Button>
-        </div>
-      </Form>
+        </Form>
+      </div>
     </div>
   )
 }

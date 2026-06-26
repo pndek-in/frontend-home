@@ -1,0 +1,33 @@
+.jl-check { display: inline-flex; align-items: flex-start; gap: var(--space-3); cursor: pointer; user-select: none; }
+.jl-check[data-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.jl-check__box {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-xs);
+  background: var(--surface-card);
+  transition: var(--transition-control);
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.jl-check__box > * { grid-area: 1 / 1; }
+.jl-check:hover .jl-check__box { border-color: var(--accent); }
+.jl-check__input { position: absolute; opacity: 0; width: 0; height: 0; }
+.jl-check__input:checked + .jl-check__box,
+.jl-check__input:indeterminate + .jl-check__box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.jl-check__input:focus-visible + .jl-check__box { box-shadow: var(--ring-focus); }
+.jl-check__mark { width: 12px; height: 12px; opacity: 0; transform: scale(0.6); transition: var(--transition-control); }
+.jl-check__input:checked + .jl-check__box .jl-check__mark { opacity: 1; transform: scale(1); }
+.jl-check__dash { width: 10px; height: 2px; border-radius: 2px; background: #fff; opacity: 0; }
+.jl-check__input:indeterminate + .jl-check__box .jl-check__dash { opacity: 1; }
+.jl-check__input:indeterminate + .jl-check__box .jl-check__mark { opacity: 0; }
+.jl-check__body { display: flex; flex-direction: column; gap: 2px; }
+.jl-check__label { font-size: var(--text-base); color: var(--text-primary); line-height: var(--leading-snug); }
+.jl-check__desc { font-size: var(--text-sm); color: var(--text-tertiary); line-height: var(--leading-snug); }

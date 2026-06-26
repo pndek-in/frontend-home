@@ -7,6 +7,7 @@ import {
   CalendarRangePicker,
   Button
 } from "~/components/shared"
+import { Stat } from "~/components/ui/stat"
 
 type AnalyticPageProps = {
   action: string
@@ -30,6 +31,7 @@ export default function AnalyticPage({
 }: AnalyticPageProps) {
   const { t } = useTranslation("dashboard")
   const context = useOutletContext() as any
+  const isVerified = context.user.isVerified
 
   const masonryLists = {
     left: statsData.tables.filter((_: any, i: number) => i % 2 === 0),
@@ -37,43 +39,44 @@ export default function AnalyticPage({
   }
 
   return (
-    <div className=" bg-white rounded-md p-4">
-      <Form
-        method="post"
-        action={action}
-        className=" flex gap-4 flex-col sm:flex-row"
-      >
-        <CalendarRangePicker maxRange={maxRange} name="range[]" />
-        <Button type="submit" className="bg-primary text-white w-full sm:w-fit">
-          {t("apply")}
-        </Button>
-      </Form>
-      <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 my-4 gap-4">
-        {statsData.counters.map((detail) => (
-          <div
-            key={detail.title + detail.value}
-            className=" bg-white p-4 rounded-md flex flex-row lg:flex-col gap-1 border shadow-md"
-          >
-            <h2 className="text-sm">{t(detail.title)}:</h2>
-            <p
-              className={`${
-                context.user.isVerified ? "" : " blur-sm select-none"
-              } text-sm font-semibold`}
-            >
-              <Counter total={context.user.isVerified ? detail.value : 0} />
-            </p>
-          </div>
-        ))}
+    <div className="space-y-4">
+      <div className="rounded-card border border-line bg-surface p-4 shadow-token">
+        <Form
+          method="post"
+          action={action}
+          className="flex flex-col gap-3 sm:flex-row sm:items-center"
+        >
+          <CalendarRangePicker maxRange={maxRange} name="range[]" />
+          <Button type="submit" className="w-full sm:w-fit">
+            {t("apply")}
+          </Button>
+        </Form>
       </div>
+
+      <Stat.Group className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {statsData.counters.map((detail) => (
+          <Stat
+            key={detail.title + detail.value}
+            label={t(detail.title)}
+            value={
+              <span className={isVerified ? "" : "select-none blur-sm"}>
+                <Counter total={isVerified ? detail.value : 0} />
+              </span>
+            }
+          />
+        ))}
+      </Stat.Group>
+
       <TotalVisitor
         label={t("total-visitor")}
         labels={statsData.chart.labels}
         data={statsData.chart.data}
         title={t("total-visitor")}
-        isVerified={context.user.isVerified}
+        isVerified={isVerified}
       />
-      <div className=" grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-        <div className="hidden lg:flex flex-col space-y-4">
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="hidden flex-col space-y-4 lg:flex">
           {masonryLists.left.map((data: any) => (
             <TopFive
               key={data.title}
@@ -84,7 +87,7 @@ export default function AnalyticPage({
             />
           ))}
         </div>
-        <div className="hidden lg:flex flex-col space-y-4">
+        <div className="hidden flex-col space-y-4 lg:flex">
           {masonryLists.right.map((data: any) => (
             <TopFive
               key={data.title}
@@ -95,7 +98,7 @@ export default function AnalyticPage({
             />
           ))}
         </div>
-        <div className="lg:hidden flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 lg:hidden">
           {statsData.tables.map((data: any) => (
             <TopFive
               key={data.title}

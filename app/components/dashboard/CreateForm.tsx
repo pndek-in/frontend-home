@@ -1,9 +1,11 @@
 import { Form, useOutletContext } from "@remix-run/react"
 import { useState, useEffect, useRef } from "react"
 import { useTranslation } from "react-i18next"
-import { Tooltip } from "antd"
 
-import { Input, Button, Divider, CalendarTimePicker } from "~/components/shared"
+import { Input, Button, CalendarTimePicker } from "~/components/shared"
+import { Field } from "~/components/ui/field"
+import { Tooltip } from "~/components/ui/tooltip"
+import { Checkbox } from "~/components/ui/checkbox"
 
 type CreateFormProps = {
   isReset?: boolean
@@ -30,75 +32,71 @@ export default function CreateForm({ isReset }: CreateFormProps) {
     setIsAddConfigShown(!isAddConfigShown)
   }
 
-  const DividerWrapper = ({ children }: { children: React.ReactNode }) => {
-    return context.user?.isVerified ? (
-      <>{children}</>
-    ) : (
-      <Tooltip title={t("tooltip-need-verify-first")}>{children}</Tooltip>
-    )
-  }
+  const ConfigToggle = (
+    <Checkbox
+      name="addConfig"
+      id="addConfig"
+      onChange={handleAddConfig}
+      disabled={!context?.user?.isVerified}
+      checked={isAddConfigShown}
+      label={t("additional-config")}
+    />
+  )
 
   return (
     <Form
       method="post"
       action="/dashboard/links"
-      className=" flex flex-col p-4 bg-white rounded-md"
+      className="flex flex-col gap-4 rounded-card border border-line bg-surface p-4 shadow-token sm:p-5"
       ref={$form}
     >
-      <div className=" flex">
+      <div className="flex w-full rounded-card border border-line bg-app p-2">
         <Input
           placeholder={t("long-link-placeholder", { ns: "common" })}
           name="link"
           variant="group"
+          className="border-none shadow-none"
         />
         <Button type="submit" isGroup name="intent" value="create">
           {t("shorten", { ns: "common" })}
         </Button>
       </div>
 
-      <Divider className="mt-4">
-        <DividerWrapper>
-          <div className=" flex mx-4">
-            <input
-              type="checkbox"
-              name="addConfig"
-              id="addConfig"
-              onChange={handleAddConfig}
-              className=" cursor-pointer"
-              disabled={!context?.user?.isVerified}
-              checked={isAddConfigShown}
-            />
-            <label htmlFor="addConfig" className="pl-2 cursor-pointer">
-              {t("additional-config")}
-            </label>
-          </div>
-        </DividerWrapper>
-      </Divider>
+      <div className="flex items-center">
+        {context.user?.isVerified ? (
+          ConfigToggle
+        ) : (
+          <Tooltip content={t("tooltip-need-verify-first")}>
+            {ConfigToggle}
+          </Tooltip>
+        )}
+      </div>
 
       {isAddConfigShown ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-          <span>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field label={t("description")}>
             <Input
               placeholder={t("placeholder-input-url-description")}
               name="description"
             />
-          </span>
-          <CalendarTimePicker
-            placeholder={t("placeholder-input-url-expired-at")}
-            name="expiredAt"
-          />
-          <Tooltip
-            placement="topLeft"
-            title={t("tooltip-input-url-secret-code")}
+          </Field>
+          <Field label={t("expires")}>
+            <CalendarTimePicker
+              placeholder={t("placeholder-input-url-expired-at")}
+              name="expiredAt"
+            />
+          </Field>
+          <Field
+            label={t("secret-code")}
+            hint={t("tooltip-input-url-secret-code")}
+            className="sm:col-span-2"
           >
-            <span>
-              <Input
-                placeholder={t("placeholder-input-url-secret-code")}
-                name="secretCode"
-                type="password"
-              />
-            </span>
-          </Tooltip>
+            <Input
+              placeholder={t("placeholder-input-url-secret-code")}
+              name="secretCode"
+              type="password"
+            />
+          </Field>
         </div>
       ) : null}
     </Form>

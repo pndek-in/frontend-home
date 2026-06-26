@@ -1,5 +1,5 @@
 {
-  "links": "Links", 
+  "links": "Links",
   "analytics": "Analytics",
   "settings": "Settings",
   "additional-config": "Additional Settings",
@@ -38,5 +38,25 @@
   "send-email": "Send email",
   "email-sent": "Email sent",
   "generate-token-telegram": "Generate Telegram Token for accessing Telegram Bot",
-  "generate": "Generate"
+  "generate": "Generate",
+  "page-links-subtitle": "Create, manage, and track your short links",
+  "page-analytics-subtitle": "Insights and visitor stats for your links",
+  "page-settings-subtitle": "Manage your account and integrations",
+  "no-links-title": "No links here yet",
+  "no-links-active-desc": "Shorten a long URL above to get your first link.",
+  "no-links-inactive-desc": "Archived links will show up here.",
+  "edit-link": "Edit link",
+  "short-link": "Short link",
+  "description": "Description",
+  "expires": "Expires",
+  "secret-code": "Secret code",
+  "save": "Save",
+  "user-setting": "User setting",
+  "telegram-setting": "Telegram setting",
+  "copied": "Copied to clipboard",
+  "clicks": "Clicks",
+  "expired-at": "Expired at",
+  "expires-at": "Expires at",
+  "archive": "Archive",
+  "restore": "Restore"
 }
