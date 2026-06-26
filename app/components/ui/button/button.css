@@ -1,0 +1,69 @@
+.jl-btn {
+  --_h: 38px;
+  --_px: var(--space-4);
+  --_fs: var(--text-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-inline);
+  height: var(--_h);
+  padding: 0 var(--_px);
+  font-family: var(--font-sans);
+  font-size: var(--_fs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  text-decoration: none;
+  transition: var(--transition-control);
+  -webkit-tap-highlight-color: transparent;
+}
+.jl-btn:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.jl-btn:disabled,
+.jl-btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.jl-btn svg { width: 1.15em; height: 1.15em; flex: none; }
+
+.jl-btn--sm { --_h: 32px; --_px: var(--space-3); --_fs: var(--text-sm); }
+.jl-btn--md { --_h: 38px; --_px: var(--space-4); --_fs: var(--text-base); }
+.jl-btn--lg { --_h: 44px; --_px: var(--space-5); --_fs: var(--text-md); }
+.jl-btn--block { width: 100%; }
+
+.jl-btn--primary {
+  background: var(--accent);
+  color: var(--text-on-brand);
+  box-shadow: var(--shadow-xs);
+}
+.jl-btn--primary:hover:not(:disabled) { background: var(--accent-hover); }
+.jl-btn--primary:active:not(:disabled) { background: var(--accent-active); }
+
+.jl-btn--secondary {
+  background: var(--surface-card);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-xs);
+}
+.jl-btn--secondary:hover:not(:disabled) { background: var(--surface-raised); border-color: var(--border-strong); }
+.jl-btn--secondary:active:not(:disabled) { background: var(--surface-sunken); }
+
+.jl-btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.jl-btn--ghost:hover:not(:disabled) { background: var(--surface-raised); color: var(--text-primary); }
+
+.jl-btn--subtle {
+  background: var(--accent-subtle);
+  color: var(--text-brand);
+}
+.jl-btn--subtle:hover:not(:disabled) { background: var(--accent-muted); }
+
+.jl-btn--danger {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: var(--shadow-xs);
+}
+.jl-btn--danger:hover:not(:disabled) { background: var(--danger-hover); }

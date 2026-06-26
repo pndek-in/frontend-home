@@ -18,6 +18,8 @@ import { useTranslation } from "react-i18next"
 import { ToastContainer, toast } from "react-toastify"
 import toastStyle from "react-toastify/dist/ReactToastify.css"
 
+import { cssBundleHref } from "@remix-run/css-bundle"
+
 import styles from "~/styles/tailwind.css"
 import antd from "~/styles/antd.css"
 import { Theme } from "~/types/theme"
@@ -64,6 +66,7 @@ export const links: LinksFunction = () => [
     href: "/favicon.svg",
     type: "image/svg+xml"
   },
+  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   { rel: "stylesheet", href: styles },
   { rel: "stylesheet", href: antd },
   { rel: "stylesheet", href: toastStyle },
@@ -83,7 +86,7 @@ export function ErrorBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className=" bg-slate-200 dark:bg-slate-600">
+      <body className="bg-app text-fg font-sans">
         <Navbar
           theme={"light" as Theme.Light}
           onThemeChanged={() => {}}
@@ -147,7 +150,10 @@ export default function App() {
 
   const htmlProps = useMemo(() => {
     return {
-      className: theme === "system" ? undefined : theme
+      className: theme === "system" ? undefined : theme,
+      // JLDS tokens key dark mode off [data-theme="dark"]; the Tailwind `dark`
+      // class is kept in sync separately for legacy `dark:` utilities.
+      "data-theme": theme === "system" ? undefined : theme
     }
   }, [theme])
 
@@ -208,7 +214,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className=" bg-slate-200 dark:bg-slate-600">
+      <body className="bg-app text-fg font-sans">
         <Navbar
           theme={currentTheme}
           onThemeChanged={onThemeChanged}

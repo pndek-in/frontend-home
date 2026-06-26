@@ -8,6 +8,7 @@ import { Button, Link } from "~/components/shared"
 import LanguageSelect from "~/components/navbar/LanguageSelect"
 import { dashboardMenu, footerMenu } from "~/utils/constants"
 import ImageLogo from "~/assets/logo.svg"
+import ImageLogoInverted from "~/assets/logo-inverted.svg"
 
 type DrawerProps = {
   isLoggedIn: boolean
@@ -32,20 +33,29 @@ export default function Drawer({ isLoggedIn, homeLink }: DrawerProps) {
       </Button>
 
       <div
-        className={`fixed top-0 left-0 z-50 w-64 h-full bg-gray-100 shadow transition-transform transform ${
+        className={`fixed top-0 left-0 z-50 w-64 h-full bg-surface border-r border-line shadow-token-lg transition-transform transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="p-4">
           <div className=" mb-4">
             <Link to={homeLink}>
-              <img src={ImageLogo} className=" h-8 w-auto" title="pndek.in" />
+              <img
+                src={ImageLogo}
+                className="block dark:hidden h-8 w-auto"
+                title="pndek.in"
+              />
+              <img
+                src={ImageLogoInverted}
+                className="hidden dark:block h-8 w-auto"
+                title="pndek.in"
+              />
             </Link>
           </div>
           <LanguageSelect isBlock className=" my-4 w-full" />
           {isLoggedIn ? (
             <>
-              <hr className=" border-gray-400" />
+              <hr className=" border-line" />
               <ul className=" space-y-4 my-4">
                 {dashboardMenu.map((menu, i) => (
                   <li
@@ -59,7 +69,7 @@ export default function Drawer({ isLoggedIn, homeLink }: DrawerProps) {
                   </li>
                 ))}
               </ul>
-              <hr className=" border-gray-400" />
+              <hr className=" border-line" />
             </>
           ) : (
             <div className=" flex flex-col space-y-4">
@@ -104,7 +114,7 @@ export default function Drawer({ isLoggedIn, homeLink }: DrawerProps) {
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black opacity-50"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         ></div>
       )}

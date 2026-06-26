@@ -1,0 +1,21 @@
+.jl-field { display: flex; flex-direction: column; gap: var(--space-2); width: 100%; }
+.jl-field__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+.jl-field__req { color: var(--danger); }
+.jl-field__hint { font-size: var(--text-sm); color: var(--text-tertiary); line-height: var(--leading-snug); }
+.jl-field__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--danger-text);
+  line-height: var(--leading-snug);
+}
+.jl-field__optional { color: var(--text-tertiary); font-weight: var(--weight-regular); }

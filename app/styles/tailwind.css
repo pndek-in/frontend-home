@@ -1,3 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================================
+   JLDS Design System — design tokens & base styles
+   Light-first, low-glare. Dark is opt-in: set data-theme="dark"
+   on <html>. Reference ONLY the semantic aliases in product
+   code — never the raw ramps.
+   ============================================================ */
+
+:root {
+  /* ===== Base ramps (theme-agnostic — same hex in both themes) ===== */
+
+  /* --- Neutral ramp (cool, slightly green-tinted) --- */
+  --neutral-0:   #ffffff;
+  --neutral-25:  #f7f9f8;
+  --neutral-50:  #eef2f0;
+  --neutral-100: #d9e0dd;
+  --neutral-150: #b9c4bf;
+  --neutral-200: #97a5a0;
+  --neutral-300: #6f7d78;
+  --neutral-400: #525e59;
+  --neutral-500: #3d4642;
+  --neutral-600: #2d3531;
+  --neutral-700: #222824;
+  --neutral-800: #181d1a;
+  --neutral-900: #101412;
+  --neutral-950: #0a0d0c;
+
+  /* --- Brand: deep emerald --- */
+  --brand-50:  #e7f7f0;
+  --brand-100: #c6ebd9;
+  --brand-200: #95dbbc;
+  --brand-300: #5cc49b;
+  --brand-400: #2ea67c;
+  --brand-500: #1b8a64;
+  --brand-600: #157053;
+  --brand-700: #105942;
+  --brand-800: #0d4836;
+  --brand-900: #0b3a2c;
+
+  /* --- Semantic hue ramps --- */
+  --green-400: #4ade80;  --green-500: #22c55e;  --green-600: #16a34a;  --green-700: #86efac;
+  --amber-400: #fbbf24;  --amber-500: #f59e0b;  --amber-600: #d97706;  --amber-700: #fcd34d;
+  --red-400:   #f87171;  --red-500:   #ef4444;  --red-600:   #dc2626;  --red-700:   #fca5a5;
+  --sky-400:   #38bdf8;  --sky-500:   #0ea5e9;  --sky-600:   #0284c7;  --sky-700:   #7dd3fc;
+
+  /* ===== LIGHT semantic aliases (default) ===== */
+
+  /* --- Surfaces — off-white app, white cards --- */
+  --bg-app:          #f3f5f3;
+  --bg-subtle:       #ecefec;
+  --surface-card:    #ffffff;
+  --surface-raised:  #ffffff;
+  --surface-sunken:  #eef1ee;
+  --surface-overlay: #ffffff;
+  --surface-inverse: var(--neutral-900);
+  --surface-hover:   #ecefec;
+  --surface-active:  #e3e7e4;
+  --surface-muted:   #e8ebe8;
+
+  /* --- Borders / dividers --- */
+  --border-subtle:  #e6e9e6;
+  --border-default: #d8ddd9;
+  --border-strong:  #c4cbc6;
+  --border-focus:   var(--brand-500);
+
+  /* --- Text --- */
+  --text-primary:   #161b18;
+  --text-secondary: #5a655f;
+  --text-tertiary:  #8a948f;
+  --text-disabled:  #aab2ad;
+  --text-inverse:   var(--neutral-25);
+  --text-brand:     var(--brand-600);
+  --text-on-brand:  #ffffff;
+
+  /* --- Accent (light: hover & active DEEPEN) --- */
+  --accent:        var(--brand-600);
+  --accent-hover:  var(--brand-700);
+  --accent-active: var(--brand-800);
+  --accent-subtle: var(--brand-50);
+  --accent-muted:  var(--brand-100);
+  --accent-ring:   color-mix(in srgb, var(--brand-500) 35%, transparent);
+
+  /* --- Semantic: success / warning / danger / info --- */
+  --success:        #16a34a;  --success-hover: #15803d;  --success-subtle: #e7f6ec;  --success-text: #15803d;
+  --warning:        #d97706;  --warning-hover: #b45309;  --warning-subtle: #fdf3e0;  --warning-text: #b45309;
+  --danger:         #dc2626;  --danger-hover:  #b91c1c;  --danger-subtle:  #fdecea;  --danger-text:  #b91c1c;
+  --info:           #0284c7;  --info-hover:    #0369a1;  --info-subtle:    #e7f2fb;  --info-text:    #0369a1;
+
+  /* --- Typography (Geist, 14px base) --- */
+  --font-sans:    'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'Geist Mono', ui-monospace, 'SF Mono', 'JetBrains Mono', 'Menlo', monospace;
+  --font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --text-2xs:  0.6875rem;  /* 11px */
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.8125rem;  /* 13px */
+  --text-base: 0.875rem;   /* 14px — UI default */
+  --text-md:   0.9375rem;  /* 15px */
+  --text-lg:   1.0625rem;  /* 17px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  1.875rem;   /* 30px */
+  --text-4xl:  2.375rem;   /* 38px */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extrabold:800;
+  --leading-none:    1;
+  --leading-tight:   1.15;
+  --leading-snug:    1.3;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+  --tracking-tighter: -0.03em;
+  --tracking-tight:   -0.015em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.02em;
+  --tracking-wider:   0.06em;
+  --display-tracking: var(--tracking-tighter);
+  --heading-tracking: var(--tracking-tight);
+  --body-leading:     var(--leading-normal);
+
+  /* --- Spacing (4px grid) --- */
+  --space-0:  0;
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-7:  1.75rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --gap-inline:  var(--space-2);
+  --gap-tight:   var(--space-3);
+  --gap-default: var(--space-4);
+  --gap-loose:   var(--space-6);
+  --pad-control: var(--space-3);
+  --pad-card:    var(--space-6);
+
+  /* --- Radius --- */
+  --radius-xs:      4px;
+  --radius-sm:      6px;
+  --radius-md:      8px;
+  --radius-lg:      10px;
+  --radius-xl:      12px;
+  --radius-2xl:     16px;
+  --radius-3xl:     20px;
+  --radius-pill:    999px;
+  --radius-full:    9999px;
+  --radius-control: var(--radius-xl);
+  --radius-card:    var(--radius-2xl);
+  --radius-input:   var(--radius-lg);
+  --radius-badge:   var(--radius-pill);
+
+  /* --- Shadows (light: soft real drop shadows) --- */
+  --shadow-color: 220 24% 22%;
+  --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.06);
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05), 0 1px 3px hsl(var(--shadow-color) / 0.08);
+  --shadow-md: 0 2px 6px hsl(var(--shadow-color) / 0.06), 0 6px 14px hsl(var(--shadow-color) / 0.09);
+  --shadow-lg: 0 6px 12px hsl(var(--shadow-color) / 0.07), 0 16px 32px hsl(var(--shadow-color) / 0.11);
+  --shadow-xl: 0 10px 20px hsl(var(--shadow-color) / 0.08), 0 28px 56px hsl(var(--shadow-color) / 0.13);
+  --shadow-2xl: 0 18px 40px hsl(var(--shadow-color) / 0.10), 0 48px 96px hsl(var(--shadow-color) / 0.16);
+  --shadow-inset: inset 0 1px 0 hsl(0 0% 100% / 0.6);
+  --shadow-hairline: 0 0 0 1px hsl(var(--shadow-color) / 0.06);
+  --ring-focus:   0 0 0 3px var(--accent-ring);
+  --ring-danger:  0 0 0 3px color-mix(in srgb, var(--danger) 30%, transparent);
+  --elevation-card:    var(--shadow-sm);
+  --elevation-raised:  var(--shadow-md);
+  --elevation-popover: var(--shadow-lg);
+  --elevation-modal:   var(--shadow-2xl);
+
+  /* --- Motion --- */
+  --duration-instant: 80ms;
+  --duration-fast:    140ms;
+  --duration-base:    200ms;
+  --duration-slow:    280ms;
+  --ease-standard:   cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+  --ease-exit:       cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring:     cubic-bezier(0.34, 1.3, 0.64, 1);
+  --transition-control: all var(--duration-fast) var(--ease-standard);
+  --transition-surface: all var(--duration-base) var(--ease-standard);
+}
+
+/* ============================================================
+   DARK semantic aliases — opt-in: <html data-theme="dark">
+   Deep, low-light surfaces. Hover LIGHTENS, active deepens.
+   ============================================================ */
+[data-theme="dark"] {
+  /* Surfaces */
+  --bg-app:          var(--neutral-950);
+  --bg-subtle:       var(--neutral-800);
+  --surface-card:    var(--neutral-900);
+  --surface-raised:  var(--neutral-800);
+  --surface-sunken:  #0d100f;
+  --surface-overlay: var(--neutral-800);
+  --surface-inverse: var(--neutral-50);
+  --surface-hover:   var(--neutral-800);
+  --surface-active:  var(--neutral-700);
+  --surface-muted:   #1c221e;
+
+  /* Borders / dividers */
+  --border-subtle:  #1f2622;
+  --border-default: #2b332e;
+  --border-strong:  #3c453f;
+  --border-focus:   var(--brand-400);
+
+  /* Text */
+  --text-primary:   #eaf1ed;
+  --text-secondary: #a3b0aa;
+  --text-tertiary:  #72807a;
+  --text-disabled:  #515b56;
+  --text-inverse:   var(--neutral-950);
+  --text-brand:     var(--brand-400);
+  --text-on-brand:  #ffffff;
+
+  /* Accent (dark: hover LIGHTENS, active deepens) */
+  --accent:        var(--brand-500);
+  --accent-hover:  var(--brand-400);
+  --accent-active: var(--brand-600);
+  --accent-subtle: #15271f;
+  --accent-muted:  #1d3a2d;
+  --accent-ring:   color-mix(in srgb, var(--brand-400) 40%, transparent);
+
+  /* Semantic */
+  --success:        var(--green-500);  --success-hover: var(--green-400);  --success-subtle: #112a1c;  --success-text: var(--green-700);
+  --warning:        var(--amber-500);  --warning-hover: var(--amber-400);  --warning-subtle: #2c2310;  --warning-text: var(--amber-700);
+  --danger:         var(--red-500);    --danger-hover:  var(--red-400);    --danger-subtle:  #2d1517;  --danger-text:  var(--red-700);
+  --info:           var(--sky-500);    --info-hover:    var(--sky-400);    --info-subtle:    #0f2433;  --info-text:    var(--sky-700);
+
+  /* Shadows (dark: deeper, higher alpha) */
+  --shadow-color: 220 60% 2%;
+  --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.40);
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.35), 0 1px 3px hsl(var(--shadow-color) / 0.40);
+  --shadow-md: 0 2px 6px hsl(var(--shadow-color) / 0.40), 0 6px 14px hsl(var(--shadow-color) / 0.45);
+  --shadow-lg: 0 6px 12px hsl(var(--shadow-color) / 0.40), 0 16px 32px hsl(var(--shadow-color) / 0.50);
+  --shadow-xl: 0 10px 20px hsl(var(--shadow-color) / 0.45), 0 28px 56px hsl(var(--shadow-color) / 0.55);
+  --shadow-2xl: 0 18px 40px hsl(var(--shadow-color) / 0.50), 0 48px 96px hsl(var(--shadow-color) / 0.62);
+  --shadow-inset: inset 0 1px 0 hsl(0 0% 100% / 0.05);
+  --shadow-hairline: 0 0 0 1px hsl(0 0% 100% / 0.04);
+}
+
+/* --- Base resets --- */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--body-leading);
+  color: var(--text-primary);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}

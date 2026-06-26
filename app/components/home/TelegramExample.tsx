@@ -73,19 +73,19 @@ export default function TelegramExample() {
 
   const getBubbleStyle = (type: string) => {
     if (type === "bot") {
-      return "left-6 md:left-8 bg-purple-500 text-white border-purple-600 rounded-tl-3xl rounded-br-3xl rounded-tr-3xl"
+      return "left-6 md:left-8 bg-surface-raised text-fg border-line rounded-tl-3xl rounded-br-3xl rounded-tr-3xl"
     } else {
-      return "right-7 md:right-8 bg-green-500 text-white border-green-600 rounded-tr-3xl rounded-bl-3xl rounded-tl-3xl"
+      return "right-7 md:right-8 bg-brand text-fg-onbrand border-brand rounded-tr-3xl rounded-bl-3xl rounded-tl-3xl"
     }
   }
 
   return (
-    <div className=" bg-white dark:bg-slate-200">
+    <div className=" bg-app">
       <div className=" flex flex-col md:flex-row items-center p-5 mx-auto max-w-[900px] w-full py-20 md:py-10 space-x-0 md:space-x-16">
         <div className=" max-w-96">
-          <div className=" bg-gradient-to-t from-teal-500 via-sky-600 to-sky-900 rounded-[60px] md:rounded-[80px] md:w-full w-[calc(100%-10px)]">
+          <div className=" bg-gradient-to-t from-[var(--brand-600)] via-[var(--brand-900)] to-[var(--brand-900)] rounded-[60px] md:rounded-[80px] md:w-full w-[calc(100%-10px)]">
             <div className="relative">
-              <div className="absolute bg-slate-500 rounded-t-[60px] md:rounded-t-[80px] top-0 w-full flex items-end h-24 md:h-28 px-7 md:px-10 py-3 md:py-4 shadow-md">
+              <div className="absolute bg-[var(--brand-700)] rounded-t-[60px] md:rounded-t-[80px] top-0 w-full flex items-end h-24 md:h-28 px-7 md:px-10 py-3 md:py-4 shadow-md">
                 <div className=" flex items-center gap-2">
                   <img
                     src={BotLogo}

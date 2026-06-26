@@ -1,0 +1,34 @@
+.jl-select-wrap { position: relative; display: inline-flex; width: 100%; }
+.jl-select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: var(--_h, 38px);
+  padding: 0 calc(var(--space-3) + 1.4em) 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--_fs, var(--text-base));
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-input);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  outline: none;
+  transition: var(--transition-control);
+}
+.jl-select:hover { border-color: var(--border-strong); }
+.jl-select:focus-visible { border-color: var(--border-focus); box-shadow: var(--ring-focus); }
+.jl-select:disabled { opacity: 0.55; background: var(--bg-subtle); pointer-events: none; }
+.jl-select[data-placeholder="true"] { color: var(--text-tertiary); }
+.jl-select--sm { --_h: 32px; --_fs: var(--text-sm); }
+.jl-select--md { --_h: 38px; --_fs: var(--text-base); }
+.jl-select--lg { --_h: 44px; --_fs: var(--text-md); }
+.jl-select-chevron {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-tertiary);
+  display: inline-flex;
+}

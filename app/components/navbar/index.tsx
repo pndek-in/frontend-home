@@ -6,6 +6,7 @@ import LanguageSelect from "./LanguageSelect"
 import { Button, Drawer } from "~/components/shared"
 import { Theme } from "~/types/theme"
 import ImageLogo from "~/assets/logo.svg"
+import ImageLogoInverted from "~/assets/logo-inverted.svg"
 
 export default function Navbar({
   theme = Theme.Light,
@@ -25,13 +26,24 @@ export default function Navbar({
   const homeLink = isDashboard ? "/dashboard" : "/"
 
   return (
-    <header className=" bg-white dark:bg-slate-200 h-[64px] sticky top-0 z-10">
+    <header className="bg-surface/80 backdrop-blur border-b border-line h-[64px] sticky top-0 z-30">
       <nav className="lg:max-w-7xl mx-auto flex flex-row-reverse sm:flex-row justify-between items-center p-5 h-16">
         <div className="sm:hidden flex items-center">
           <Drawer homeLink={homeLink} isLoggedIn={isLoggedIn} />
         </div>
         <Link to={homeLink}>
-          <img src={ImageLogo} className=" h-8 w-auto" title="pndek.in" />
+          {/* Black logo in light mode, white (inverted) in dark mode — toggled
+              purely via the `.dark` class so it always matches the theme. */}
+          <img
+            src={ImageLogo}
+            className="block dark:hidden h-8 w-auto"
+            title="pndek.in"
+          />
+          <img
+            src={ImageLogoInverted}
+            className="hidden dark:block h-8 w-auto"
+            title="pndek.in"
+          />
         </Link>
         {!isError && (
           <div className=" flex items-center">
@@ -51,7 +63,7 @@ export default function Navbar({
               ) : (
                 <>
                   <Link to="/login">
-                    <Button>{t("login")}</Button>
+                    <Button variant="ghost">{t("login")}</Button>
                   </Link>
                   <Link to="/register">
                     <Button>{t("register")}</Button>

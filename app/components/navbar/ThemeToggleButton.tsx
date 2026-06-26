@@ -2,37 +2,41 @@ import { Icon } from "@iconify-icon/react"
 
 import { clientCookie } from "~/utils/helpers"
 import { Theme } from "~/types/theme"
+import { Switch } from "~/components/ui/switch"
 
 export default function ToggleThemeButton({
   theme = Theme.Light,
   onThemeChanged = (_: string) => {}
 }) {
-  const onSwitchChange = (isLight: boolean) => {
-    const newTheme = isLight ? Theme.Dark : Theme.Light // Toggle theme
-    document.cookie = clientCookie.stringify("theme", newTheme, { httpOnly: false })
+  const isDark = theme === Theme.Dark
+
+  const onSwitchChange = () => {
+    const newTheme = isDark ? Theme.Light : Theme.Dark // Toggle theme
+    document.cookie = clientCookie.stringify("theme", newTheme, {
+      httpOnly: false
+    })
     document.documentElement.classList.remove(Theme.Light, Theme.Dark)
     document.documentElement.classList.add(newTheme)
+    // Keep JLDS tokens ([data-theme="dark"]) in sync with the Tailwind class.
+    document.documentElement.setAttribute("data-theme", newTheme)
     onThemeChanged(newTheme)
   }
 
   return (
-    <button
-      className="w-10 h-4 rounded-full bg-white flex items-center transition duration-300 focus:outline-none shadow"
-      onClick={() => onSwitchChange(theme === Theme.Light)}
-    >
-      <div
-        className={`w-8 h-8 relative flex items-center justify-center rounded-full transition duration-500 transform ${
-          theme === Theme.Dark
-            ? "bg-gray-700 translate-x-4"
-            : "bg-sky-500 -translate-x-2"
-        } p-1 text-white`}
-      >
-        {theme === Theme.Dark ? (
-          <Icon icon="line-md:moon-loop" className=" text-yellow-200" />
-        ) : (
-          <Icon icon="line-md:sun-rising-loop" className=" text-amber-300" />
-        )}
-      </div>
-    </button>
+    <div className="flex items-center gap-2">
+      <Icon
+        icon="line-md:sun-rising-loop"
+        className={isDark ? "text-gray-500" : "text-amber-400"}
+      />
+      <Switch
+        checked={isDark}
+        onChange={onSwitchChange}
+        aria-label="Toggle dark mode"
+      />
+      <Icon
+        icon="line-md:moon-loop"
+        className={isDark ? "text-sky-300" : "text-gray-400"}
+      />
+    </div>
   )
 }

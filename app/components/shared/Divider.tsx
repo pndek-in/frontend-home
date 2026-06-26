@@ -1,5 +1,7 @@
 import { ReactNode } from "react"
 
+import { Divider as JLDivider } from "~/components/ui/divider"
+
 type DividerWithTextProps = {
   text?: string
   children?: ReactNode
@@ -11,17 +13,8 @@ const DividerWithText = ({
   children,
   className
 }: DividerWithTextProps) => {
-  return (
-    <div className={`flex items-center justify-center ${className}`}>
-      <div className="flex-grow border-t border-gray-300" />
-      {!children ? (
-        <span className="mx-4 text-sm text-gray-600">{text}</span>
-      ) : (
-        children
-      )}
-      <div className="flex-grow border-t border-gray-300" />
-    </div>
-  )
+  const label = children ?? text
+  return <JLDivider label={label} className={className} />
 }
 
 export default DividerWithText

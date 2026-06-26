@@ -9,7 +9,7 @@ export default function Footer() {
   const { t } = useTranslation()
 
   return (
-    <footer className="bg-white dark:bg-slate-200 h-full">
+    <footer className="bg-surface border-t border-line text-fg-muted h-full">
       <div className=" xl:max-w-7xl w-full mx-auto flex md:flex-row flex-col-reverse items-center justify-between p-5">
         <p className=" font-medium text-sm">
           © {currentYear}{" "}

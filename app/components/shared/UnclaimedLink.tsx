@@ -27,7 +27,7 @@ export default function UnclaimedLink({ linkData }: UnclaimedLinkProps) {
   }
 
   return (
-    <div className=" w-full bg-white p-4 rounded-md flex justify-between items-center">
+    <div className=" w-full bg-surface border border-line shadow-token p-4 rounded-card flex justify-between items-center text-fg">
       <div className=" flex flex-col">
         <button onClick={() => copyText(linkData.path)} className=" text-start">
           <h2 className=" text-xl font-bold hover:underline cursor-pointer break-all">
@@ -38,7 +38,7 @@ export default function UnclaimedLink({ linkData }: UnclaimedLinkProps) {
           href={linkData.url}
           target="_blank"
           rel="noreferrer"
-          className=" text-sm font-normal text-gray-400 hover:underline cursor-pointer break-all"
+          className=" text-sm font-normal text-fg-muted hover:underline cursor-pointer break-all"
         >
           {linkData.url}
         </a>
@@ -51,7 +51,7 @@ export default function UnclaimedLink({ linkData }: UnclaimedLinkProps) {
             <>
               <Icon
                 icon="mdi:chart-areaspline"
-                className=" text-xl text-purple-500 cursor-help"
+                className=" text-xl text-brand-text cursor-help"
               />
             </>
           </Tooltip>

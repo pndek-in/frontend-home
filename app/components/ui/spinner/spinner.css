@@ -1,0 +1,8 @@
+.jl-spinner { display: inline-block; color: var(--accent); }
+.jl-spinner svg { display: block; animation: jl-spin 0.7s linear infinite; }
+.jl-spinner__track { opacity: 0.2; }
+@keyframes jl-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .jl-spinner svg { animation-duration: 1.6s; }
+}

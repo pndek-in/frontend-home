@@ -5,7 +5,9 @@ import { Select } from "~/components/shared"
 
 export default function LanguageSelect({ className = "", isBlock = false }) {
   const { i18n } = useTranslation()
-  const currentLang = i18n.language
+  // i18n.language may be a full locale (e.g. "en-US"); normalize to the base
+  // language so it matches the "en" / "id" option values.
+  const currentLang = i18n.language?.startsWith("id") ? "id" : "en"
 
   const changeLanguage = (language: string) => {
     i18n.changeLanguage(language, async (error) => {
@@ -37,7 +39,7 @@ export default function LanguageSelect({ className = "", isBlock = false }) {
   return (
     <div className={className}>
       <Select
-        defaultValue={getLangLabel(currentLang)}
+        value={currentLang}
         onChange={(e) => changeLanguage(e)}
         options={options}
         isBlock={isBlock}

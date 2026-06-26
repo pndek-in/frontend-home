@@ -9,13 +9,11 @@ type CounterContentProps = {
 
 function CounterContent({ count, title }: CounterContentProps) {
   return (
-    <div className="p-4 text-center">
-      <h3 className=" font-semibold text-gray-800 dark:text-gray-200 text-3xl sm:text-5xl mb-2">
+    <div className="flex-1 p-4 text-center">
+      <h3 className="mb-2 text-4xl font-extrabold tracking-tight text-brand-text sm:text-5xl">
         <Counter total={count} />
       </h3>
-      <p className=" text-gray-600 dark:text-gray-300 font-semibold text-lg sm:text-xl">
-        {title}
-      </p>
+      <p className="text-base font-medium text-fg-muted sm:text-lg">{title}</p>
     </div>
   )
 }
@@ -46,10 +44,12 @@ export default function Statistic({ stats }: StatisticProps) {
   ]
 
   return (
-    <div className=" flex flex-col sm:flex-row justify-center sm:space-x-10 md:space-x-32 py-20 px-5 mx-auto max-w-[900px] w-full">
-      {counters.map((counter, index) => (
-        <CounterContent key={index} {...counter} />
-      ))}
+    <div className="px-5 py-20">
+      <div className="mx-auto flex w-full max-w-4xl flex-col divide-y divide-line rounded-card border border-line bg-subtle p-6 sm:flex-row sm:divide-x sm:divide-y-0">
+        {counters.map((counter, index) => (
+          <CounterContent key={index} {...counter} />
+        ))}
+      </div>
     </div>
   )
 }

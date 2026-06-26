@@ -1,0 +1,30 @@
+.jl-switch { display: inline-flex; align-items: center; gap: var(--space-3); cursor: pointer; user-select: none; }
+.jl-switch[data-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.jl-switch__input { position: absolute; opacity: 0; width: 0; height: 0; }
+.jl-switch__track {
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 22px;
+  background: var(--neutral-300);
+  border-radius: var(--radius-pill);
+  transition: var(--transition-control);
+}
+.jl-switch--sm .jl-switch__track { width: 32px; height: 18px; }
+.jl-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.jl-switch--sm .jl-switch__thumb { width: 14px; height: 14px; }
+.jl-switch__input:checked + .jl-switch__track { background: var(--accent); }
+.jl-switch__input:checked + .jl-switch__track .jl-switch__thumb { transform: translateX(16px); }
+.jl-switch--sm .jl-switch__input:checked + .jl-switch__track .jl-switch__thumb { transform: translateX(14px); }
+.jl-switch__input:focus-visible + .jl-switch__track { box-shadow: var(--ring-focus); }
+.jl-switch__label { font-size: var(--text-base); color: var(--text-primary); }

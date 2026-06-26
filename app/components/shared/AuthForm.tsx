@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { toast } from "react-toastify"
 
 import { Button, Input } from "~/components/shared"
+import { Alert } from "~/components/ui/alert"
 
 type AuthFormProps = {
   actionData?: {
@@ -35,19 +36,23 @@ export default function AuthForm({
 
   return (
     <div className=" text-center">
-      <h1 className=" text-2xl sm:text-3xl font-extrabold text-gray-800 mb-4">
+      <h1 className=" text-2xl sm:text-3xl font-extrabold mb-4 text-fg">
         {type === "login" ? t("login-form-title") : t("register-form-title")}
       </h1>
       <div className=" flex flex-col items-center p-1 sm:p-5">
         <Form id="auth-form" method="post" className=" flex w-full">
-          <div className="w-full flex flex-col items-center justify-start">
+          <div className="w-full flex flex-col items-stretch justify-start gap-3">
+            {actionData?.errors?.toast ? (
+              <Alert tone="danger" className="text-left">
+                {actionData.errors.toast}
+              </Alert>
+            ) : null}
             {type === "register" ? (
               <Input
                 placeholder={t("input-name")}
                 name="name"
                 type="text"
-                className="mb-2"
-                isError={!!actionData?.errors?.name}
+                  isError={!!actionData?.errors?.name}
                 errorText={actionData?.errors?.name}
               />
             ) : null}
@@ -55,7 +60,6 @@ export default function AuthForm({
               placeholder={t("input-email")}
               name="email"
               type="email"
-              className="mb-2"
               autoComplete="email"
               isError={!!actionData?.errors?.email}
               errorText={actionData?.errors?.email}
@@ -65,7 +69,6 @@ export default function AuthForm({
               name="password"
               type="password"
               autoComplete="current-password"
-              className="mb-2"
               isError={!!actionData?.errors?.password}
               errorText={actionData?.errors?.password}
             />
@@ -74,12 +77,11 @@ export default function AuthForm({
                 placeholder={t("input-confirm-password")}
                 name="confirmPassword"
                 type="password"
-                className="mb-2"
-                isError={!!actionData?.errors?.confirmPassword}
+                  isError={!!actionData?.errors?.confirmPassword}
                 errorText={actionData?.errors?.confirmPassword}
               />
             ) : null}
-            <Button id="submit-form" type="submit" className="mt-6">
+            <Button id="submit-form" type="submit" isBlock className="mt-3">
               {type === "login" ? t("login-button") : t("register-button")}
             </Button>
           </div>

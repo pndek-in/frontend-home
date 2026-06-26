@@ -1,0 +1,39 @@
+.jl-iconbtn {
+  --_s: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_s);
+  height: var(--_s);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: transparent;
+  transition: var(--transition-control);
+  -webkit-tap-highlight-color: transparent;
+}
+.jl-iconbtn:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.jl-iconbtn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.jl-iconbtn svg { width: 1.2em; height: 1.2em; }
+
+.jl-iconbtn--sm { --_s: 32px; font-size: var(--text-sm); }
+.jl-iconbtn--md { --_s: 38px; font-size: var(--text-base); }
+.jl-iconbtn--lg { --_s: 44px; font-size: var(--text-md); }
+
+.jl-iconbtn--ghost:hover:not(:disabled) { background: var(--bg-subtle); color: var(--text-primary); }
+.jl-iconbtn--ghost:active:not(:disabled) { background: var(--surface-active); }
+
+.jl-iconbtn--secondary {
+  background: var(--surface-card);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
+}
+.jl-iconbtn--secondary:hover:not(:disabled) { background: var(--bg-subtle); border-color: var(--border-strong); }
+
+.jl-iconbtn--primary { background: var(--accent); color: var(--text-on-brand); box-shadow: var(--shadow-xs); }
+.jl-iconbtn--primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+.jl-iconbtn--round { border-radius: var(--radius-full); }

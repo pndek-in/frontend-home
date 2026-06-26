@@ -1,0 +1,28 @@
+.jl-tooltip { position: relative; display: inline-flex; }
+.jl-tooltip__pop {
+  position: absolute;
+  z-index: 50;
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+}
+.jl-tooltip__pop[data-show="true"] { opacity: 1; transform: scale(1); }
+.jl-tooltip__pop[data-side="top"]    { bottom: 100%; left: 50%; translate: -50% -8px; }
+.jl-tooltip__pop[data-side="bottom"] { top: 100%; left: 50%; translate: -50% 8px; }
+.jl-tooltip__pop[data-side="left"]   { right: 100%; top: 50%; translate: -8px -50%; }
+.jl-tooltip__pop[data-side="right"]  { left: 100%; top: 50%; translate: 8px -50%; }
+.jl-tooltip__arrow { position: absolute; width: 7px; height: 7px; background: var(--surface-inverse); rotate: 45deg; }
+.jl-tooltip__pop[data-side="top"] .jl-tooltip__arrow    { bottom: -3px; left: 50%; margin-left: -3.5px; }
+.jl-tooltip__pop[data-side="bottom"] .jl-tooltip__arrow { top: -3px; left: 50%; margin-left: -3.5px; }
+.jl-tooltip__pop[data-side="left"] .jl-tooltip__arrow   { right: -3px; top: 50%; margin-top: -3.5px; }
+.jl-tooltip__pop[data-side="right"] .jl-tooltip__arrow  { left: -3px; top: 50%; margin-top: -3.5px; }

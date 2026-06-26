@@ -1,0 +1,13 @@
+{
+  "framework": "react",
+  "typescript": true,
+  "tailwind": {
+    "config": "tailwind.config.ts",
+    "css": "app/styles/tailwind.css"
+  },
+  "paths": {
+    "components": "app/components/ui",
+    "utils": "app/lib/utils"
+  },
+  "registry": "https://cdn.jsdelivr.net/gh/jarooda/jlds@v1.0.2/registry"
+}

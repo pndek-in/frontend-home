@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next"
 import { Icon } from "@iconify-icon/react"
 
+import { Card } from "~/components/ui/card"
+
 type FeatureProps = {
   title: string
   desc: string
@@ -9,18 +11,19 @@ type FeatureProps = {
 
 function Feature({ title, desc, icon }: FeatureProps) {
   return (
-    <div className=" shadow-xl rounded-md bg-white dark:bg-slate-700 p-4 flex items-center space-x-4">
-      <Icon
-        icon={icon}
-        className=" text-4xl text-gray-800 dark:text-gray-200"
-      />
-      <div className=" flex flex-col">
-        <h3 className=" font-semibold text-gray-800 dark:text-gray-200">
-          {title}
-        </h3>
-        <p className=" text-gray-600 dark:text-gray-300 text-sm">{desc}</p>
+    <Card
+      elevation="raised"
+      interactive
+      className="flex items-start gap-4 p-5 text-fg transition-transform duration-200 hover:-translate-y-1"
+    >
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-control bg-brand-subtle text-2xl text-brand-text">
+        <Icon icon={icon} />
+      </span>
+      <div className="flex flex-col gap-1">
+        <h3 className="font-semibold text-fg">{title}</h3>
+        <p className="text-sm text-fg-muted">{desc}</p>
       </div>
-    </div>
+    </Card>
   )
 }
 

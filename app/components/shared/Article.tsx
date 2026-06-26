@@ -31,13 +31,13 @@ export default function Article({
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-16 text-gray-800 dark:text-gray-200">
+      <h1 className="text-2xl font-bold mb-16 text-fg">
         {title}
       </h1>
       {articles.map((article, iArticle) => (
         <div key={iArticle} className="w-full lg:w-3/4 mb-8">
           {article.title && (
-            <h2 className="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200">
+            <h2 className="text-xl font-bold text-center mb-4 text-fg">
               {article.title}
             </h2>
           )}
@@ -45,7 +45,7 @@ export default function Article({
             {article.contents.map((content, iContent) => (
               <div key={`${iArticle}-${iContent}`}>
                 <li
-                  className={`text-sm text-gray-800 dark:text-gray-200 mb-4 ${
+                  className={`text-sm text-fg mb-4 ${
                     content.type === "list" ? " list-disc ml-4" : ""
                   }`}
                   dangerouslySetInnerHTML={{ __html: content.text }}
@@ -55,7 +55,7 @@ export default function Article({
                     {content.childs.map((child, iChild) => (
                       <li
                         key={`${iArticle}-${iContent}-${iChild}`}
-                        className="text-sm text-gray-800 dark:text-gray-200 mb-4 list-disc ml-4"
+                        className="text-sm text-fg mb-4 list-disc ml-4"
                         dangerouslySetInnerHTML={{ __html: child }}
                       />
                     ))}
@@ -68,7 +68,7 @@ export default function Article({
       ))}
 
       {latestUpdate && (
-        <p className="text-sm text-gray-800 lg:w-3/4 dark:text-gray-200 mt-8 w-full">
+        <p className="text-sm text-fg lg:w-3/4 mt-8 w-full">
           {t("last-updated")}: {latestUpdateDate}
         </p>
       )}
