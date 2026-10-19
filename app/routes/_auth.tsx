@@ -2,7 +2,7 @@ import { json, redirect } from "@remix-run/node"
 import type { ActionFunctionArgs } from "@remix-run/node"
 import { Outlet } from "@remix-run/react"
 import { useTranslation } from "react-i18next"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData, useLocation } from "@remix-run/react"
 
 import { userState } from "~/services/cookies.server"
 import { GoogleLogin, Divider } from "~/components/shared"
@@ -25,6 +25,7 @@ export async function loader({ request }: ActionFunctionArgs) {
 export default function Index() {
   const { googleClientId = "" } = useLoaderData<typeof loader>()
   const { t } = useTranslation("auth")
+  const { pathname } = useLocation()
 
   return (
     <main className=" min-h-[calc(100vh-64px-60px)] flex items-center p-4">
@@ -33,7 +34,9 @@ export default function Index() {
         className="mx-auto w-full p-4 sm:w-[640px] sm:p-16"
       >
         <Outlet />
-        <Divider text={t("or-continue-with")} className="my-4" />
+        {pathname !== "/register" ? (
+          <Divider text={t("or-continue-with")} className="my-4" />
+        ) : null}
         <div className=" flex justify-center">
           <GoogleLogin isButton googleClientId={googleClientId} />
         </div>
